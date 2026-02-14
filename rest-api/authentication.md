@@ -2,7 +2,23 @@
 
 ---
 
-### 1. 🟡 A security reviewer looks at your auth system and asks: "JWTs are just Base64-encoded — anyone can decode the payload and read it. How is this secure?" Walk them through the JWT structure and explain why this isn't the vulnerability they think it is.
+### 1. 🟢 What's the difference between 401 and 403?
+
+401 Unauthorized means the client is not authenticated — the server doesn't know who you are (missing or invalid credentials). 403 Forbidden means the client is authenticated but not authorized — the server knows who you are, but you don't have permission to access this resource.
+
+**Hint:** Quick check for understanding of authentication vs authorization at the HTTP level. Follow up: "If a valid user with a 'viewer' role tries to delete a resource, which status code should they get?"
+
+---
+
+### 2. 🟢 Where should a JWT token be sent in an HTTP request?
+
+In the `Authorization: Bearer <token>` header. JWTs should not be sent in query strings (they get logged in server access logs and browser history) or stored in cookies for API-to-API communication (cookies are a browser mechanism and introduce CSRF risks).
+
+**Hint:** Look for awareness of the Bearer token convention and why query strings are insecure for tokens. Follow up: "What's the risk if a JWT ends up in a URL query parameter?"
+
+---
+
+### 3. 🟡 A security reviewer looks at your auth system and asks: "JWTs are just Base64-encoded — anyone can decode the payload and read it. How is this secure?" Walk them through the JWT structure and explain why this isn't the vulnerability they think it is.
 
 A JWT has three Base64URL-encoded parts separated by dots: Header, Payload, and Signature. The header specifies the algorithm (e.g., `HS256` or `RS256`), the payload contains claims like `sub`, `iss`, `exp`, and custom data, and the signature is a cryptographic hash of the first two parts using a secret or private key.
 
@@ -18,7 +34,7 @@ With symmetric signing (HMAC), both parties share the same secret; with asymmetr
 
 ---
 
-### 2. 🟡 Two backend services in your system need to communicate securely — there's no user involved and no browser. How do you set up the authentication between them?
+### 4. 🟡 Two backend services in your system need to communicate securely — there's no user involved and no browser. How do you set up the authentication between them?
 
 You use the OAuth 2.0 Client Credentials flow, which is designed for machine-to-machine (M2M) communication. The calling service authenticates with the authorization server by sending its `client_id` and `client_secret` to the token endpoint with `grant_type=client_credentials`. The authorization server validates the credentials and returns a JWT access token, which the calling service attaches to requests as a `Bearer` token.
 
@@ -42,7 +58,7 @@ grant_type=client_credentials
 
 ---
 
-### 3. 🟡 You're adding JWT authentication to an ASP.NET Core API. Some endpoints should be protected, but the health check and login endpoints must stay public. Walk through how you set this up.
+### 5. 🟡 You're adding JWT authentication to an ASP.NET Core API. Some endpoints should be protected, but the health check and login endpoints must stay public. Walk through how you set this up.
 
 You register JWT Bearer authentication in the DI container and configure `TokenValidationParameters` to tell the framework how to validate incoming tokens — which issuer and audience to accept, and which signing key to use.
 
@@ -89,7 +105,7 @@ public class HealthController : ControllerBase { /* public */ }
 
 ---
 
-### 4. 🟢 Your API returns 401 Unauthorized when a valid, authenticated user tries to access an admin-only endpoint. A junior developer says "the authentication is broken." Is that the right diagnosis?
+### 6. 🟢 Your API returns 401 Unauthorized when a valid, authenticated user tries to access an admin-only endpoint. A junior developer says "the authentication is broken." Is that the right diagnosis?
 
 No — the authentication is working correctly; it's the authorization that is rejecting the request. Authentication answers "who are you?" and authorization answers "are you allowed to do this?"
 
@@ -103,7 +119,7 @@ In ASP.NET Core, authentication is handled by `UseAuthentication()` middleware a
 
 ---
 
-### 5. 🟢 Your team builds a SPA hosted at `app.example.com` that calls an API at `api.example.com`. Requests work perfectly in Postman, but the browser blocks them with a CORS error. The junior developer suggests disabling CORS. Why does this happen, and what's the proper fix?
+### 7. 🟢 Your team builds a SPA hosted at `app.example.com` that calls an API at `api.example.com`. Requests work perfectly in Postman, but the browser blocks them with a CORS error. The junior developer suggests disabling CORS. Why does this happen, and what's the proper fix?
 
 Browsers enforce the Same-Origin Policy, which blocks JavaScript from making requests to a different origin (scheme + host + port). Postman doesn't enforce this because it's not a browser — it sends requests directly without the preflight check.
 

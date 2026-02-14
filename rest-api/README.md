@@ -6,5 +6,5 @@ This category covers RESTful API design, OpenAPI/Swagger documentation, authenti
 
 | File | Focus Area | Questions |
 |------|-----------|-----------|
-| [API Design](api-design.md) | REST conventions, versioning, OpenAPI/Swagger, error handling, rate limiting | 5 |
-| [Authentication & Security](authentication.md) | JWT structure & validation, M2M auth, JWT bearer setup, authn vs authz, CORS | 5 |
+| [API Design](api-design.md) | REST conventions, versioning, OpenAPI/Swagger, error handling, rate limiting | 8 |
+| [Authentication & Security](authentication.md) | JWT structure & validation, M2M auth, JWT bearer setup, authn vs authz, CORS | 7 |

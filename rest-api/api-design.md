@@ -2,7 +2,31 @@
 
 ---
 
-### 1. 🟢 You're reviewing a pull request for a new API. The endpoints are named `/getOrders`, `/createOrder`, and `/deleteOrderById`. Every response returns HTTP 200, even when validation fails — the error is embedded in the JSON body. What feedback do you give in the review?
+### 1. 🟢 What HTTP status code means "Created"? What about "No Content"? What does 409 mean?
+
+201 Created — returned when a resource is successfully created (e.g., after a POST). 204 No Content — the request succeeded but there's nothing to return (common for DELETE or PUT). 409 Conflict — the request conflicts with the current state of the resource (e.g., duplicate entry or version mismatch).
+
+**Hint:** Quick check for baseline HTTP knowledge. Follow up with: "When would you choose 204 over 200 for a successful request?"
+
+---
+
+### 2. 🟢 What's the difference between PUT and PATCH?
+
+PUT replaces the entire resource — you send the full object, and anything you omit is removed or reset to defaults. PATCH updates only the specific fields you include in the request body. PUT is idempotent (calling it multiple times produces the same result), while PATCH can be but isn't guaranteed to be.
+
+**Hint:** Look for understanding that PUT is a full replacement while PATCH is a partial update. Follow up: "If a client sends a PUT request with only two of ten fields, what happens to the other eight?"
+
+---
+
+### 3. 🟢 What does 429 mean and how does the client know when to retry?
+
+429 Too Many Requests — the client has exceeded the rate limit set by the server. The server should include a `Retry-After` header indicating how many seconds the client should wait before sending another request.
+
+**Hint:** Quick check that the candidate knows rate-limiting basics from the client's perspective. Follow up: "What's the difference between a fixed window and a sliding window rate limiter?"
+
+---
+
+### 4. 🟢 You're reviewing a pull request for a new API. The endpoints are named `/getOrders`, `/createOrder`, and `/deleteOrderById`. Every response returns HTTP 200, even when validation fails — the error is embedded in the JSON body. What feedback do you give in the review?
 
 The endpoint names violate REST conventions by embedding verbs — resources should be nouns. The correct design uses `/orders` as the resource with HTTP methods conveying the action: `GET /orders` to list, `POST /orders` to create, `DELETE /orders/{id}` to remove.
 
@@ -16,7 +40,7 @@ Additionally, plural nouns should be used consistently (`/orders`, not `/order`)
 
 ---
 
-### 2. 🟡 Your public API has been live for a year with paying customers. Product asks you to make breaking changes to the order resource — renaming fields and removing deprecated ones. How do you roll this out without breaking existing clients?
+### 5. 🟡 Your public API has been live for a year with paying customers. Product asks you to make breaking changes to the order resource — renaming fields and removing deprecated ones. How do you roll this out without breaking existing clients?
 
 You introduce API versioning so the old contract remains available while new clients adopt the updated one. The most common approach in ASP.NET Core is URL-path versioning (`/v1/orders` and `/v2/orders`) because it is explicit and easy to test in a browser or with curl.
 
@@ -37,7 +61,7 @@ You should communicate a deprecation timeline, return `Sunset` or custom depreca
 
 ---
 
-### 3. 🟢 A new team member asks how external developers will know what your API expects and returns. You want documentation that is auto-generated and always matches the actual code. How do you set this up?
+### 6. 🟢 A new team member asks how external developers will know what your API expects and returns. You want documentation that is auto-generated and always matches the actual code. How do you set this up?
 
 You integrate OpenAPI (formerly Swagger) into the ASP.NET Core project. Adding `Swashbuckle.AspNetCore` or `NSwag` generates a machine-readable `openapi.json` spec directly from your controllers, models, and route metadata. Enrich the spec with `[ProducesResponseType(typeof(OrderDto), 200)]` attributes and XML documentation comments — enable XML doc generation in the `.csproj` and configure Swashbuckle to read it. The Swagger UI provides an interactive explorer where developers can try endpoints directly. Beyond documentation, the OpenAPI spec can generate typed client SDKs in any language using tools like NSwag, AutoRest, or openapi-generator, which eliminates manual HTTP client code. In production, consider restricting Swagger UI access behind authentication or disabling it entirely, while still publishing the spec file for tooling.
 
@@ -61,7 +85,7 @@ app.UseSwaggerUI();
 
 ---
 
-### 4. 🟡 Your API returns plain strings for some errors, HTML error pages for others (from the framework), and JSON for yet others. A frontend developer complains they can't reliably parse error responses. How do you standardize this?
+### 7. 🟡 Your API returns plain strings for some errors, HTML error pages for others (from the framework), and JSON for yet others. A frontend developer complains they can't reliably parse error responses. How do you standardize this?
 
 You adopt the Problem Details standard (RFC 9457, formerly RFC 7807), which defines a consistent JSON structure for HTTP API errors with fields like `type`, `title`, `status`, `detail`, and `instance`. In .NET 7+, calling `builder.Services.AddProblemDetails()` configures the framework to produce Problem Details responses for exceptions, model validation failures, and empty-result status codes automatically. For validation errors, ASP.NET Core returns `ValidationProblemDetails`, which extends Problem Details with an `errors` dictionary keyed by field name. You can customize the output using `IExceptionHandler` in .NET 8+ for global exception handling or by configuring `ProblemDetailsOptions` to add custom fields. This ensures that every error — whether a 400, 404, 500, or anything else — follows the same envelope, making client-side error handling straightforward and consistent.
 
@@ -81,7 +105,7 @@ You adopt the Problem Details standard (RFC 9457, formerly RFC 7807), which defi
 
 ---
 
-### 5. 🟡 Your API is being hammered by a bot doing 10,000 requests per minute, and some of your endpoints are expensive (large database joins, external service calls). How do you protect the API without blocking legitimate users?
+### 8. 🟡 Your API is being hammered by a bot doing 10,000 requests per minute, and some of your endpoints are expensive (large database joins, external service calls). How do you protect the API without blocking legitimate users?
 
 You implement rate limiting using the built-in rate-limiting middleware available in .NET 7+. The middleware supports multiple algorithms: fixed window (simple counter per time window), sliding window (smoother traffic shaping), token bucket (allows short bursts), and concurrency limiter (caps simultaneous requests). You configure policies and apply them globally, per-endpoint, or per-controller. Rate limits should be keyed by client identifier — IP address, API key, or authenticated user — so one abusive client doesn't consume the quota for everyone. When a client exceeds the limit, the API returns `429 Too Many Requests` with a `Retry-After` header. For distributed deployments behind a load balancer, you need a shared store like Redis so the counter is consistent across instances.
 
