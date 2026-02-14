@@ -33,15 +33,17 @@ Interviewer: _______________
 | SQL Server                |             |       |
 | REST API & Auth           |             |       |
 | SOLID Principles          |             |       |
-| Event-Driven Architecture |             |       |
+| Event-Driven              |             |       |
 | .NET Modern (8/10)        |             |       |
-| Architecture Patterns     |             |       |
-| Real-World Scenarios    |             |       |
+| Architecture & Patterns   |             |       |
+| Real-World Scenarios      |             |       |
 | Communication & Clarity   |             |       |
 
 Overall: ___ / 40
 Recommendation: [ ] Strong Hire  [ ] Hire  [ ] No Hire  [ ] Strong No Hire
 ```
+
+> **Note:** The scorecard has 10 categories instead of 8 question folders. The .NET category is split into two rows (.NET Internals and .NET Modern) to reflect its two distinct topic areas, and Communication & Clarity is a cross-cutting soft-skill assessment.
 
 ---
 
