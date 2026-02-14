@@ -94,7 +94,7 @@ Thread starvation occurs when all Thread Pool threads are blocked (e.g., synchro
 
 **Hint:** Great answers include why `Span<T>` cannot be used in async methods (it is a ref struct), how `ReadOnlySpan<char>` eliminates `string.Substring` allocations, and the role of `MemoryPool<T>`.
 
-**🚩 Red Signal:** Cannot explain why `Span<T>` is restricted to the stack or conflates it with `Array.
+**🚩 Red Signal:** Cannot explain why `Span<T>` is restricted to the stack or conflates it with `Array<T>`.
 
 ---
 
