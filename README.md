@@ -21,17 +21,16 @@ A structured question bank for evaluating senior .NET developer candidates at a 
 
 | # | Category | Folder | Key Topics | Questions |
 |---|----------|--------|------------|-----------|
-| 1 | .NET Internals | [dotnet-internals/](dotnet-internals/) | Thread Pool, GC, async/await, ArrayPool, LOH, Span\<T\> | 10 |
-| 2 | .NET Modern (8/10) | [dotnet-modern/](dotnet-modern/) | Minimal APIs vs controllers, Native AOT, endpoint filters, health checks | 10 |
-| 3 | EF Core & LINQ | [ef-core-linq/](ef-core-linq/) | Query translation, change tracking, bulk operations, N+1, migrations | 10 |
-| 4 | SQL Server | [sql-server/](sql-server/) | Indexes, complex queries, SqlBulkCopy, UPSERT, TVP, temp tables | 10 |
-| 5 | REST API & Auth | [rest-api/](rest-api/) | REST conventions, Swagger/OpenAPI, JWT, M2M auth, CORS | 10 |
-| 6 | SOLID Principles | [solid-principles/](solid-principles/) | SRP, OCP, DIP, LSP, ISP, practical trade-offs | 10 |
-| 7 | Event-Driven Architecture | [event-driven/](event-driven/) | Events vs commands, eventual consistency, Outbox, Sagas, idempotency | 10 |
-| 8 | Architecture & Patterns | [architecture-patterns/](architecture-patterns/) | Clean Architecture, CQRS, MediatR, Circuit Breaker, Options pattern | 10 |
-| 9 | Real-World Scenarios | [real-world-scenarios/](real-world-scenarios/) | Production debugging, migration, resilience, incident response | 10 |
+| 1 | .NET | [dotnet/](dotnet/) | Thread Pool, GC, async/await, memory, Minimal APIs, .NET 8/10, DI, hosting | 22 |
+| 2 | EF Core & LINQ | [ef-core-linq/](ef-core-linq/) | Query translation, change tracking, bulk operations, N+1, migrations | 10 |
+| 3 | SQL Server | [sql-server/](sql-server/) | Indexes, complex queries, SqlBulkCopy, UPSERT, TVP, temp tables | 10 |
+| 4 | REST API & Auth | [rest-api/](rest-api/) | REST conventions, Swagger/OpenAPI, JWT, M2M auth, CORS | 10 |
+| 5 | SOLID Principles | [solid-principles/](solid-principles/) | SRP, OCP, DIP, LSP, ISP, practical trade-offs | 10 |
+| 6 | Event-Driven Architecture | [event-driven/](event-driven/) | Events vs commands, eventual consistency, Outbox, Sagas, idempotency | 10 |
+| 7 | Architecture & Patterns | [architecture-patterns/](architecture-patterns/) | Clean Architecture, CQRS, MediatR, Circuit Breaker, Options pattern | 10 |
+| 8 | Real-World Scenarios | [real-world-scenarios/](real-world-scenarios/) | Production debugging, migration, resilience, incident response | 10 |
 
-**Total: 90 questions across 9 categories**
+**Total: 92 questions across 8 categories**
 
 ## Question Format
 
@@ -59,10 +58,10 @@ See the [Evaluation Guide](EVALUATION.md) for the full interview process, scorin
 ├── EVALUATION.md              # Scoring rubric and interview guide
 ├── CONTRIBUTING.md            # How to add or improve questions
 ├── LICENSE                    # MIT license
-├── dotnet-internals/
-│   └── README.md              # Thread Pool, GC, async/await, ArrayPool, LOH
-├── dotnet-modern/
-│   └── README.md              # .NET 8/10, minimal APIs, Native AOT
+├── dotnet/
+│   ├── README.md              # Intro + index for .NET category
+│   ├── internals.md           # Thread Pool, GC, async/await, memory
+│   └── modern-dotnet.md       # .NET 8/10, minimal APIs, DI, hosting
 ├── ef-core-linq/
 │   └── README.md              # EF Core, LINQ, change tracking, bulk ops
 ├── sql-server/
