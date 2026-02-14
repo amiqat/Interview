@@ -4,7 +4,7 @@ Questions on complex queries, indexing strategies, handling large data, bulk ope
 
 ---
 
-### 1. Explain the difference between clustered and non-clustered indexes. When would you choose one over the other?
+### 1. 🟢 Explain the difference between clustered and non-clustered indexes. When would you choose one over the other?
 
 A **clustered index** determines the physical order of data in the table — there can be only one per table (typically the primary key). A **non-clustered index** is a separate B-tree structure with pointers (row locators) back to the data pages.
 
@@ -16,7 +16,7 @@ Choose a clustered index for columns used in range scans (`BETWEEN`, `ORDER BY`)
 
 ---
 
-### 2. What is a covering index and how does it eliminate key lookups?
+### 2. 🟡 What is a covering index and how does it eliminate key lookups?
 
 A covering index contains all columns needed by a query — either as key columns or via `INCLUDE` columns. When the query can be satisfied entirely from the index, SQL Server avoids the expensive key lookup (or RID lookup) back to the clustered index/heap.
 
@@ -26,7 +26,7 @@ A covering index contains all columns needed by a query — either as key column
 
 ---
 
-### 3. How do you approach indexing a table with millions of rows and mixed read/write workloads?
+### 3. 🔴 How do you approach indexing a table with millions of rows and mixed read/write workloads?
 
 - Analyse the most frequent and expensive queries using the Query Store or DMVs (`sys.dm_exec_query_stats`).
 - Use the missing index DMVs (`sys.dm_db_missing_index_details`) as hints, not gospel.
@@ -40,7 +40,7 @@ A covering index contains all columns needed by a query — either as key column
 
 ---
 
-### 4. Explain `SqlBulkCopy` and how you use it to perform high-performance inserts into SQL Server.
+### 4. 🟡 Explain `SqlBulkCopy` and how you use it to perform high-performance inserts into SQL Server.
 
 `SqlBulkCopy` streams data from a `DataTable`, `IDataReader`, or `DataRow[]` directly into a SQL Server table using the TDS bulk insert protocol — the same mechanism as `BULK INSERT` and `bcp`. It bypasses the normal INSERT statement overhead and can insert millions of rows per second.
 
@@ -50,7 +50,7 @@ A covering index contains all columns needed by a query — either as key column
 
 ---
 
-### 5. How do you implement an UPSERT (INSERT or UPDATE) pattern in SQL Server?
+### 5. 🟡 How do you implement an UPSERT (INSERT or UPDATE) pattern in SQL Server?
 
 The standard pattern is `MERGE`:
 
@@ -69,7 +69,7 @@ Alternatively, use `INSERT ... ON CONFLICT`-style with an explicit `IF EXISTS` /
 
 ---
 
-### 6. What are Table-Valued Parameters (TVP) and when should you use them?
+### 6. 🟡 What are Table-Valued Parameters (TVP) and when should you use them?
 
 TVPs allow you to pass a structured table of data to a stored procedure or parameterised query. You define a `CREATE TYPE ... AS TABLE`, then pass a `DataTable` or `IEnumerable<SqlDataRecord>` from C# as a `SqlParameter` with `SqlDbType.Structured`.
 
@@ -81,7 +81,7 @@ Use cases: passing a list of IDs for an `IN` clause, batch operations, and repla
 
 ---
 
-### 7. Compare temp tables (`#temp`) vs table variables (`@table`). When do you choose each?
+### 7. 🟡 Compare temp tables (`#temp`) vs table variables (`@table`). When do you choose each?
 
 | Feature | Temp Table (`#temp`) | Table Variable (`@table`) |
 |---|---|---|
@@ -99,7 +99,7 @@ Use cases: passing a list of IDs for an `IN` clause, batch operations, and repla
 
 ---
 
-### 8. How do you write and optimise a complex query that joins 5+ tables with large data volumes?
+### 8. 🔴 How do you write and optimise a complex query that joins 5+ tables with large data volumes?
 
 - Start with the correct JOIN types (INNER, LEFT) and ensure proper ON clauses.
 - Examine the execution plan: look for table scans, high-cost operators, key lookups, and hash joins on small tables.
@@ -114,7 +114,7 @@ Use cases: passing a list of IDs for an `IN` clause, batch operations, and repla
 
 ---
 
-### 9. What is the Query Store and how do you use it to troubleshoot performance regressions?
+### 9. 🟡 What is the Query Store and how do you use it to troubleshoot performance regressions?
 
 Query Store captures query plans, execution statistics, and wait stats at the query level. It allows you to:
 - Identify regressed queries by comparing recent vs historical plans.
@@ -127,7 +127,7 @@ Query Store captures query plans, execution statistics, and wait stats at the qu
 
 ---
 
-### 10. How do you handle processing or exporting millions of rows without running out of memory?
+### 10. 🔴 How do you handle processing or exporting millions of rows without running out of memory?
 
 - **Server-side cursor / streaming:** Use `SqlDataReader` with `CommandBehavior.SequentialAccess` to stream rows without buffering the entire result set.
 - **Batching:** Process in chunks using `OFFSET/FETCH` or keyset pagination (`WHERE Id > @lastId ORDER BY Id`).

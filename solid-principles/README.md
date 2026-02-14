@@ -4,7 +4,7 @@ Questions focused on the Single Responsibility, Open/Closed, and Dependency Inve
 
 ---
 
-### 1. Explain the Single Responsibility Principle (SRP). Give a real-world .NET example of a violation and how you would fix it.
+### 1. 🟢 Explain the Single Responsibility Principle (SRP). Give a real-world .NET example of a violation and how you would fix it.
 
 SRP states that a class should have only one reason to change — it should encapsulate one responsibility. A common violation is a `UserService` that handles user registration, sends emails, writes audit logs, and validates input all in one class.
 
@@ -16,7 +16,7 @@ SRP states that a class should have only one reason to change — it should enca
 
 ---
 
-### 2. How does the Open/Closed Principle (OCP) apply when adding a new payment method to an e-commerce system?
+### 2. 🟡 How does the Open/Closed Principle (OCP) apply when adding a new payment method to an e-commerce system?
 
 OCP states that software entities should be open for extension but closed for modification. Instead of adding a new `if`/`switch` branch to a `ProcessPayment` method for every new provider, define an `IPaymentProcessor` interface and create a new implementation (`StripePaymentProcessor`, `PayPalPaymentProcessor`). Register them in the DI container and resolve via a factory or strategy pattern.
 
@@ -26,7 +26,7 @@ OCP states that software entities should be open for extension but closed for mo
 
 ---
 
-### 3. Explain the Dependency Inversion Principle (DIP) and how it relates to Dependency Injection in ASP.NET Core.
+### 3. 🟡 Explain the Dependency Inversion Principle (DIP) and how it relates to Dependency Injection in ASP.NET Core.
 
 DIP states: (A) High-level modules should not depend on low-level modules — both should depend on abstractions. (B) Abstractions should not depend on details — details should depend on abstractions.
 
@@ -38,7 +38,7 @@ In ASP.NET Core, this is realised through the built-in DI container: controllers
 
 ---
 
-### 4. What is the Liskov Substitution Principle (LSP)? Give an example of a violation in C#.
+### 4. 🟡 What is the Liskov Substitution Principle (LSP)? Give an example of a violation in C#.
 
 LSP states that objects of a derived class should be substitutable for objects of the base class without altering the correctness of the program. The classic violation: `Square` inherits from `Rectangle` and overrides `Width`/`Height` setters to keep them equal — code that expects independent width/height breaks.
 
@@ -50,7 +50,7 @@ In .NET: a `ReadOnlyCollection<T>` that inherits from a mutable `IList<T>` and t
 
 ---
 
-### 5. How does the Interface Segregation Principle (ISP) help in designing .NET services?
+### 5. 🟢 How does the Interface Segregation Principle (ISP) help in designing .NET services?
 
 ISP states that clients should not be forced to depend on interfaces they do not use. Instead of a fat `IUserService` with `Register`, `Login`, `UpdateProfile`, `DeleteAccount`, `GenerateReport`, split into focused interfaces: `IUserRegistration`, `IUserAuthentication`, `IUserProfileManager`.
 
@@ -60,7 +60,7 @@ ISP states that clients should not be forced to depend on interfaces they do not
 
 ---
 
-### 6. How do you apply SOLID principles when designing a background job processing system?
+### 6. 🔴 How do you apply SOLID principles when designing a background job processing system?
 
 - **SRP:** Separate job scheduling, execution, retry logic, and dead-letter handling into distinct classes.
 - **OCP:** New job types implement `IJob` or `IJobHandler<T>` — no changes to the processor/dispatcher.
@@ -74,7 +74,7 @@ ISP states that clients should not be forced to depend on interfaces they do not
 
 ---
 
-### 7. What is the captive dependency problem and how does it violate DIP?
+### 7. 🔴 What is the captive dependency problem and how does it violate DIP?
 
 A captive dependency occurs when a service with a shorter lifetime is injected into a service with a longer lifetime. For example, a `Scoped` `DbContext` injected into a `Singleton` service — the DbContext is captured and reused across all requests, causing threading issues and stale data.
 
@@ -86,7 +86,7 @@ A captive dependency occurs when a service with a shorter lifetime is injected i
 
 ---
 
-### 8. How do you avoid over-engineering when applying SOLID principles?
+### 8. 🟡 How do you avoid over-engineering when applying SOLID principles?
 
 SOLID principles are guidelines, not laws. Over-engineering signs:
 - Creating interfaces for classes that will never have a second implementation.
@@ -101,7 +101,7 @@ Pragmatic approach: apply SOLID where change is expected or where testability re
 
 ---
 
-### 9. How does the strategy pattern implement OCP in practice? Show a C# example.
+### 9. 🟡 How does the strategy pattern implement OCP in practice? Show a C# example.
 
 ```csharp
 public interface IDiscountStrategy
@@ -135,7 +135,7 @@ Adding a new discount type requires only a new class — `OrderService` is close
 
 ---
 
-### 10. When would you intentionally violate a SOLID principle and how do you justify it?
+### 10. 🔴 When would you intentionally violate a SOLID principle and how do you justify it?
 
 Examples of justified violations:
 - **SRP:** A simple CRUD controller that handles validation, mapping, and persistence for a straightforward entity — the cost of abstraction outweighs the benefit.

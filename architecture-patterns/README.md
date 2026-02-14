@@ -4,7 +4,7 @@ Questions on software architecture patterns, design patterns, and architectural 
 
 ---
 
-### 1. Explain the Clean Architecture pattern. How do you implement it in a .NET solution?
+### 1. 🟡 Explain the Clean Architecture pattern. How do you implement it in a .NET solution?
 
 Clean Architecture organises code into concentric layers with the **domain** at the centre and **dependencies pointing inward**:
 
@@ -19,7 +19,7 @@ Clean Architecture organises code into concentric layers with the **domain** at 
 
 ---
 
-### 2. When would you choose vertical slice architecture over layered architecture?
+### 2. 🔴 When would you choose vertical slice architecture over layered architecture?
 
 **Layered (horizontal):** Organise by technical concern — Controllers, Services, Repositories. Changes to a feature touch multiple layers.
 
@@ -33,7 +33,7 @@ Clean Architecture organises code into concentric layers with the **domain** at 
 
 ---
 
-### 3. What is the Mediator pattern and how does MediatR implement it in .NET?
+### 3. 🟡 What is the Mediator pattern and how does MediatR implement it in .NET?
 
 The Mediator pattern decouples senders from receivers by routing requests through a central mediator. MediatR implements this:
 
@@ -47,7 +47,7 @@ The Mediator pattern decouples senders from receivers by routing requests throug
 
 ---
 
-### 4. Explain CQRS (Command Query Responsibility Segregation). When is it worth the complexity?
+### 4. 🔴 Explain CQRS (Command Query Responsibility Segregation). When is it worth the complexity?
 
 CQRS separates the **write model** (commands — optimised for consistency and validation) from the **read model** (queries — optimised for fast retrieval, possibly denormalised).
 
@@ -61,7 +61,7 @@ CQRS separates the **write model** (commands — optimised for consistency and v
 
 ---
 
-### 5. What is the Repository pattern? Is it still useful with EF Core?
+### 5. 🟡 What is the Repository pattern? Is it still useful with EF Core?
 
 The Repository pattern abstracts data access behind an interface (`IOrderRepository`), hiding the persistence mechanism from the business logic.
 
@@ -75,7 +75,7 @@ The Repository pattern abstracts data access behind an interface (`IOrderReposit
 
 ---
 
-### 6. How do you implement the Options pattern for configuration in ASP.NET Core?
+### 6. 🟡 How do you implement the Options pattern for configuration in ASP.NET Core?
 
 ```csharp
 // appsettings.json
@@ -102,7 +102,7 @@ public class PaymentService(IOptions<PaymentOptions> options) { ... }
 
 ---
 
-### 7. What is the Unit of Work pattern and how does EF Core implement it?
+### 7. 🟢 What is the Unit of Work pattern and how does EF Core implement it?
 
 The Unit of Work pattern tracks all changes made during a business transaction and commits them atomically. `DbContext` is the Unit of Work in EF Core: it tracks entity changes and `SaveChanges()` writes them all in a single database transaction.
 
@@ -112,7 +112,7 @@ The Unit of Work pattern tracks all changes made during a business transaction a
 
 ---
 
-### 8. How do you implement the Circuit Breaker pattern for external service calls?
+### 8. 🟡 How do you implement the Circuit Breaker pattern for external service calls?
 
 Using Polly (standalone) or `Microsoft.Extensions.Http.Resilience` (.NET 8):
 
@@ -140,7 +140,7 @@ builder.Services.AddHttpClient<IPaymentClient, PaymentClient>()
 
 ---
 
-### 9. Explain the Decorator pattern and how ASP.NET Core's DI supports it.
+### 9. 🟡 Explain the Decorator pattern and how ASP.NET Core's DI supports it.
 
 The Decorator pattern wraps an existing implementation to add behaviour without modifying it. In .NET DI, use `Scrutor` or manual registration:
 
@@ -159,7 +159,7 @@ The call chain: `LoggingOrderRepository` → `CachingOrderRepository` → `SqlOr
 
 ---
 
-### 10. You need to design a plugin system where new features can be added without redeploying the main application. How?
+### 10. 🔴 You need to design a plugin system where new features can be added without redeploying the main application. How?
 
 **Approaches:**
 - **Assembly loading:** `AssemblyLoadContext` to load plugins at runtime from a folder. Define a shared `IPlugin` interface in a contracts package.

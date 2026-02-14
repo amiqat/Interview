@@ -1,10 +1,10 @@
-# Scenario-Based Questions
+# Real-World Scenarios
 
-Real-world scenarios that test how candidates apply their knowledge to practical problems. These questions have no single correct answer — evaluate the thinking process, trade-off analysis, and communication clarity.
+Cross-cutting scenarios that test how candidates apply their knowledge to practical problems. These questions have no single correct answer — evaluate the thinking process, trade-off analysis, and communication clarity.
 
 ---
 
-### 1. A production API endpoint that previously responded in 50ms now takes 5 seconds. How do you diagnose and fix this?
+### 1. 🔴 A production API endpoint that previously responded in 50ms now takes 5 seconds. How do you diagnose and fix this?
 
 **Expected approach:**
 1. **Reproduce** — Is it consistent or intermittent? All endpoints or just one?
@@ -20,7 +20,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 2. You need to migrate a monolithic .NET Framework 4.8 application to .NET 8. How do you plan the migration?
+### 2. 🔴 You need to migrate a monolithic .NET Framework 4.8 application to .NET 8. How do you plan the migration?
 
 **Expected approach:**
 1. **Inventory** — List all dependencies, NuGet packages, and .NET Framework-specific APIs (WCF, ASMX, `System.Web`).
@@ -36,7 +36,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 3. Your team's EF Core queries are causing performance issues on a table with 50 million rows. Walk through your investigation.
+### 3. 🟡 Your team's EF Core queries are causing performance issues on a table with 50 million rows. Walk through your investigation.
 
 **Expected approach:**
 1. **Capture the generated SQL** — `ToQueryString()` or SQL Profiler.
@@ -52,7 +52,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 4. A third-party payment API is intermittently failing (timeouts, 500 errors). How do you make your system resilient to this?
+### 4. 🟡 A third-party payment API is intermittently failing (timeouts, 500 errors). How do you make your system resilient to this?
 
 **Expected approach:**
 1. **Retry with backoff** — Use Polly (or `Microsoft.Extensions.Http.Resilience` in .NET 8) for transient failures. Exponential backoff + jitter.
@@ -68,7 +68,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 5. You are designing a multi-tenant SaaS application. How do you isolate tenant data?
+### 5. 🔴 You are designing a multi-tenant SaaS application. How do you isolate tenant data?
 
 **Expected approaches (with trade-offs):**
 
@@ -89,7 +89,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 6. A critical production bug is affecting 10% of users. Walk through your incident response.
+### 6. 🟡 A critical production bug is affecting 10% of users. Walk through your incident response.
 
 **Expected approach:**
 1. **Assess severity** — How many users affected? Is data corrupted? Is revenue impacted?
@@ -105,7 +105,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 7. You need to implement real-time notifications (e.g., order status updates) for a web application. What approach do you choose?
+### 7. 🟡 You need to implement real-time notifications (e.g., order status updates) for a web application. What approach do you choose?
 
 **Options:**
 - **SignalR** — Bi-directional communication over WebSockets (with fallbacks). Best for .NET ecosystems. Supports groups (send to a user, a role, all clients).
@@ -120,7 +120,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 8. Your CI/CD pipeline takes 45 minutes. How do you reduce it?
+### 8. 🟡 Your CI/CD pipeline takes 45 minutes. How do you reduce it?
 
 **Expected approach:**
 1. **Profile** — Which stages take the longest? Build? Tests? Deployment?
@@ -136,7 +136,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 9. You are joining a team with no unit tests and a tightly coupled codebase. How do you introduce testing?
+### 9. 🟡 You are joining a team with no unit tests and a tightly coupled codebase. How do you introduce testing?
 
 **Expected approach:**
 1. **Don't try to test everything at once** — Start with high-value targets: critical business logic, frequently-broken code, and new features.
@@ -152,7 +152,7 @@ Real-world scenarios that test how candidates apply their knowledge to practical
 
 ---
 
-### 10. Design a high-throughput API that ingests millions of events per day. What architectural decisions do you make?
+### 10. 🔴 Design a high-throughput API that ingests millions of events per day. What architectural decisions do you make?
 
 **Expected approach:**
 1. **Receive fast, process later** — Accept the event, write to a queue (Kafka, Service Bus, SQS), and return `202 Accepted`. Process asynchronously.

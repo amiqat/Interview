@@ -1,11 +1,21 @@
 # Senior .NET Developer Interview Questions
 
-A structured question bank for evaluating senior .NET developer candidates at a principal-interviewer level. Questions are organised into category folders, each with its own README containing 10 questions with interviewer hints and red-signal indicators.
+A structured question bank for evaluating senior .NET developer candidates at a principal-interviewer level. Questions are organised into category folders, each with its own README containing 10 questions with difficulty levels, interviewer hints, and red-signal indicators.
 
 ## Quick Links
 
 - 📋 [Question Template](TEMPLATE.md) — How to write new questions
 - 📊 [Evaluation Guide](EVALUATION.md) — Scoring rubric, scorecard, and interview process
+- 🤝 [Contributing](CONTRIBUTING.md) — How to add or improve questions
+- 📄 [License](LICENSE) — MIT
+
+## Difficulty Levels
+
+| Emoji | Level | Meaning |
+|-------|-------|---------|
+| 🟢 | Easy | Foundational knowledge expected of any senior developer |
+| 🟡 | Medium | Requires practical experience and deeper understanding |
+| 🔴 | Hard | Advanced topic; only strong senior/principal-level candidates will answer well |
 
 ## Categories
 
@@ -19,7 +29,7 @@ A structured question bank for evaluating senior .NET developer candidates at a 
 | 6 | SOLID Principles | [solid-principles/](solid-principles/) | SRP, OCP, DIP, LSP, ISP, practical trade-offs | 10 |
 | 7 | Event-Driven Architecture | [event-driven/](event-driven/) | Events vs commands, eventual consistency, Outbox, Sagas, idempotency | 10 |
 | 8 | Architecture & Patterns | [architecture-patterns/](architecture-patterns/) | Clean Architecture, CQRS, MediatR, Circuit Breaker, Options pattern | 10 |
-| 9 | Scenario-Based | [scenario-based/](scenario-based/) | Production debugging, migration, resilience, incident response | 10 |
+| 9 | Real-World Scenarios | [real-world-scenarios/](real-world-scenarios/) | Production debugging, migration, resilience, incident response | 10 |
 
 **Total: 90 questions across 9 categories**
 
@@ -27,6 +37,7 @@ A structured question bank for evaluating senior .NET developer candidates at a 
 
 Each question follows a consistent structure:
 
+- **Difficulty** — 🟢 Easy, 🟡 Medium, or 🔴 Hard (shown in the question heading).
 - **Question** — Open-ended interview question.
 - **Hint** — What to look for in a strong answer. Follow-up probes for the interviewer.
 - **🚩 Red Signal** — Specific warning signs that indicate a fundamental gap.
@@ -46,6 +57,8 @@ See the [Evaluation Guide](EVALUATION.md) for the full interview process, scorin
 ├── README.md                  # This file — index and overview
 ├── TEMPLATE.md                # Question template for contributors
 ├── EVALUATION.md              # Scoring rubric and interview guide
+├── CONTRIBUTING.md            # How to add or improve questions
+├── LICENSE                    # MIT license
 ├── dotnet-internals/
 │   └── README.md              # Thread Pool, GC, async/await, ArrayPool, LOH
 ├── dotnet-modern/
@@ -62,6 +75,6 @@ See the [Evaluation Guide](EVALUATION.md) for the full interview process, scorin
 │   └── README.md              # Events, Sagas, Outbox, idempotency
 ├── architecture-patterns/
 │   └── README.md              # Clean Architecture, CQRS, design patterns
-└── scenario-based/
-    └── README.md              # Real-world scenario questions
+└── real-world-scenarios/
+    └── README.md              # Cross-cutting real-world scenario questions
 ```

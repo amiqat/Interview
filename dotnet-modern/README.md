@@ -4,7 +4,7 @@ Questions on modern .NET features, minimal APIs vs controllers, middleware pipel
 
 ---
 
-### 1. What are minimal APIs in .NET and how do they differ from controller-based APIs?
+### 1. 🟢 What are minimal APIs in .NET and how do they differ from controller-based APIs?
 
 Minimal APIs define endpoints directly in `Program.cs` using `app.MapGet`, `app.MapPost`, etc. — no controllers, no `[ApiController]` attribute, no model binding conventions by default.
 
@@ -22,7 +22,7 @@ Minimal APIs define endpoints directly in `Program.cs` using `app.MapGet`, `app.
 
 ---
 
-### 2. How do you organise minimal API endpoints as the project grows beyond a few routes?
+### 2. 🟡 How do you organise minimal API endpoints as the project grows beyond a few routes?
 
 As `Program.cs` grows, structure with:
 - **Extension methods:** `app.MapOrderEndpoints()` in a separate `OrderEndpoints.cs` file.
@@ -36,7 +36,7 @@ As `Program.cs` grows, structure with:
 
 ---
 
-### 3. What are endpoint filters in minimal APIs and how do they compare to MVC action filters?
+### 3. 🟡 What are endpoint filters in minimal APIs and how do they compare to MVC action filters?
 
 Endpoint filters (`AddEndpointFilter`) are the minimal API equivalent of action/result filters. They wrap the endpoint handler and can execute logic before and after the handler runs (validation, logging, authorization).
 
@@ -57,7 +57,7 @@ app.MapPost("/orders", CreateOrder)
 
 ---
 
-### 4. Explain the `IResult` return type in minimal APIs. How does it compare to `IActionResult`?
+### 4. 🟡 Explain the `IResult` return type in minimal APIs. How does it compare to `IActionResult`?
 
 `IResult` is the minimal API equivalent of `IActionResult`. Built-in factory methods: `Results.Ok()`, `Results.NotFound()`, `Results.Created()`, `Results.Problem()`.
 
@@ -69,7 +69,7 @@ In .NET 7+, **typed results** (`Results<Ok<Order>, NotFound>`) enable OpenAPI me
 
 ---
 
-### 5. What is the `WebApplication` and `WebApplicationBuilder` pattern introduced in .NET 6+?
+### 5. 🟢 What is the `WebApplication` and `WebApplicationBuilder` pattern introduced in .NET 6+?
 
 `WebApplicationBuilder` replaces `Startup.cs` with a single `Program.cs` that configures services and middleware in a linear flow. `builder.Services` registers DI services, `builder.Build()` creates the `WebApplication`, and `app.Use*()` configures the middleware pipeline.
 
@@ -79,7 +79,7 @@ In .NET 7+, **typed results** (`Results<Ok<Order>, NotFound>`) enable OpenAPI me
 
 ---
 
-### 6. What are the key performance improvements in .NET 8 compared to earlier versions?
+### 6. 🟡 What are the key performance improvements in .NET 8 compared to earlier versions?
 
 - **Native AOT** — Ahead-of-time compilation for faster startup and smaller binaries. Limited to a subset of APIs (no reflection-heavy code).
 - **Request Delegate Generator** — Source-generated request delegates for minimal APIs, replacing runtime reflection.
@@ -94,7 +94,7 @@ In .NET 7+, **typed results** (`Results<Ok<Order>, NotFound>`) enable OpenAPI me
 
 ---
 
-### 7. How does Native AOT compilation work and what are its limitations?
+### 7. 🔴 How does Native AOT compilation work and what are its limitations?
 
 Native AOT compiles .NET code directly to native machine code at build time, eliminating the JIT compiler at runtime. This yields faster startup, lower memory footprint, and smaller deployment size.
 
@@ -110,7 +110,7 @@ Native AOT compiles .NET code directly to native machine code at build time, eli
 
 ---
 
-### 8. How do you configure dependency injection in a .NET 8 minimal API application?
+### 8. 🟢 How do you configure dependency injection in a .NET 8 minimal API application?
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -135,7 +135,7 @@ Minimal API handlers receive dependencies as method parameters — no constructo
 
 ---
 
-### 9. What is the difference between `AddSingleton`, `AddScoped`, and `AddTransient`? Give a scenario where using the wrong lifetime causes a bug.
+### 9. 🟡 What is the difference between `AddSingleton`, `AddScoped`, and `AddTransient`? Give a scenario where using the wrong lifetime causes a bug.
 
 | Lifetime | Instance per | Typical use |
 |---|---|---|
@@ -151,7 +151,7 @@ Minimal API handlers receive dependencies as method parameters — no constructo
 
 ---
 
-### 10. How do you implement health checks and what monitoring patterns should a production .NET 8 API have?
+### 10. 🟡 How do you implement health checks and what monitoring patterns should a production .NET 8 API have?
 
 ```csharp
 builder.Services.AddHealthChecks()

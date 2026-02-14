@@ -4,7 +4,7 @@ Questions on Entity Framework Core internals, query translation, change tracking
 
 ---
 
-### 1. How does EF Core translate LINQ queries to SQL? What happens when a LINQ expression cannot be translated?
+### 1. 🟡 How does EF Core translate LINQ queries to SQL? What happens when a LINQ expression cannot be translated?
 
 EF Core's query pipeline parses the LINQ expression tree, converts it to a `SqlExpression` tree, and then generates parameterised SQL. If a part of the expression cannot be translated to SQL, EF Core 5+ throws an `InvalidOperationException` by default (client evaluation was silently done in earlier versions, causing N+1 problems).
 
@@ -14,7 +14,7 @@ EF Core's query pipeline parses the LINQ expression tree, converts it to a `SqlE
 
 ---
 
-### 2. Explain the difference between `AsNoTracking()` and the default tracking behaviour in EF Core.
+### 2. 🟢 Explain the difference between `AsNoTracking()` and the default tracking behaviour in EF Core.
 
 By default, EF Core tracks all entities returned by queries in its change tracker (an identity map). `AsNoTracking()` disables this, which is faster for read-only scenarios because it skips snapshot creation and identity resolution.
 
@@ -24,7 +24,7 @@ By default, EF Core tracks all entities returned by queries in its change tracke
 
 ---
 
-### 3. How do you handle bulk inserts efficiently in EF Core?
+### 3. 🟡 How do you handle bulk inserts efficiently in EF Core?
 
 `SaveChanges()` sends one INSERT per entity by default — slow for thousands of rows. Solutions include:
 - **EF Core 7+ `ExecuteUpdate`/`ExecuteDelete`** for set-based operations.
@@ -38,7 +38,7 @@ By default, EF Core tracks all entities returned by queries in its change tracke
 
 ---
 
-### 4. What is the N+1 query problem in EF Core and how do you solve it?
+### 4. 🟢 What is the N+1 query problem in EF Core and how do you solve it?
 
 N+1 occurs when a query loads a collection of parent entities (1 query) and then lazily loads related children one-by-one (N queries). Solutions:
 - **Eager loading** with `.Include()` / `.ThenInclude()`.
@@ -52,7 +52,7 @@ N+1 occurs when a query loads a collection of parent entities (1 query) and then
 
 ---
 
-### 5. Explain compiled queries in EF Core. When should you use them?
+### 5. 🔴 Explain compiled queries in EF Core. When should you use them?
 
 `EF.CompileQuery` / `EF.CompileAsyncQuery` pre-compiles the LINQ expression tree and caches the query plan, removing the overhead of expression tree processing on every call. Useful for hot-path queries that are called thousands of times per second.
 
@@ -62,7 +62,7 @@ N+1 occurs when a query loads a collection of parent entities (1 query) and then
 
 ---
 
-### 6. How do EF Core migrations work and what strategies exist for deploying them in production?
+### 6. 🟡 How do EF Core migrations work and what strategies exist for deploying them in production?
 
 Migrations generate C# code that represents schema changes. Application strategies:
 - **`dotnet ef database update`** — good for development, risky for production.
@@ -75,7 +75,7 @@ Migrations generate C# code that represents schema changes. Application strategi
 
 ---
 
-### 7. What is the difference between `IQueryable<T>` and `IEnumerable<T>` in the context of EF Core?
+### 7. 🟢 What is the difference between `IQueryable<T>` and `IEnumerable<T>` in the context of EF Core?
 
 `IQueryable<T>` builds an expression tree that is translated to SQL and executed on the database server. `IEnumerable<T>` executes in-memory in the application. Casting an `IQueryable` to `IEnumerable` (e.g., by calling `.ToList()` too early or using incompatible LINQ methods) forces client-side evaluation of subsequent operations.
 
@@ -85,7 +85,7 @@ Migrations generate C# code that represents schema changes. Application strategi
 
 ---
 
-### 8. How do you use raw SQL in EF Core without losing the benefits of the ORM?
+### 8. 🟡 How do you use raw SQL in EF Core without losing the benefits of the ORM?
 
 - **`FromSqlRaw` / `FromSqlInterpolated`** — executes raw SQL and maps results to entities; can be composed with further LINQ (`.Where()`, `.OrderBy()`).
 - **`ExecuteSqlRaw` / `ExecuteSqlInterpolated`** — for non-query commands (INSERT/UPDATE/DELETE).
@@ -97,7 +97,7 @@ Migrations generate C# code that represents schema changes. Application strategi
 
 ---
 
-### 9. How does EF Core handle concurrency conflicts?
+### 9. 🟡 How does EF Core handle concurrency conflicts?
 
 EF Core supports optimistic concurrency via a concurrency token (a `[ConcurrencyCheck]` column or a `[Timestamp]`/`rowversion` column). When `SaveChanges()` detects that the token value in the database differs from the tracked value, it throws `DbUpdateConcurrencyException`.
 
@@ -107,7 +107,7 @@ EF Core supports optimistic concurrency via a concurrency token (a `[Concurrency
 
 ---
 
-### 10. What are Global Query Filters in EF Core and what are common use cases?
+### 10. 🟡 What are Global Query Filters in EF Core and what are common use cases?
 
 Global Query Filters are LINQ predicates applied to all queries for an entity via `OnModelCreating`. Common uses: soft-delete (`IsDeleted == false`), multi-tenancy (`TenantId == currentTenantId`).
 

@@ -36,7 +36,7 @@ Interviewer: _______________
 | Event-Driven Architecture |             |       |
 | .NET Modern (8/10)        |             |       |
 | Architecture Patterns     |             |       |
-| Scenario-Based Thinking   |             |       |
+| Real-World Scenarios    |             |       |
 | Communication & Clarity   |             |       |
 
 Overall: ___ / 40
@@ -50,7 +50,7 @@ Recommendation: [ ] Strong Hire  [ ] Hire  [ ] No Hire  [ ] Strong No Hire
 ### Before the Interview
 1. **Select 3–4 categories** most relevant to the role.
 2. **Pick 2–3 questions per category** — mix foundational and deep questions.
-3. **Prepare 1–2 scenario-based questions** — these reveal how the candidate thinks under realistic conditions.
+3. **Prepare 1–2 real-world scenario questions** — these reveal how the candidate thinks under realistic conditions (see [real-world-scenarios/](real-world-scenarios/)).
 4. **Review the Hints** — know what a strong answer looks like so you can assess in real time.
 
 ### During the Interview (60–90 minutes)

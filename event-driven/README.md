@@ -4,7 +4,7 @@ Core concepts of event-driven systems — what they are, why they matter, and th
 
 ---
 
-### 1. What is event-driven architecture and why would you choose it over synchronous request/response?
+### 1. 🟢 What is event-driven architecture and why would you choose it over synchronous request/response?
 
 Components communicate through events — a producer publishes a fact ("something happened") and zero or more consumers react independently. The producer does not wait for or even know about the consumers.
 
@@ -18,7 +18,7 @@ Components communicate through events — a producer publishes a fact ("somethin
 
 ---
 
-### 2. What is the difference between an event and a command?
+### 2. 🟢 What is the difference between an event and a command?
 
 | | Event | Command |
 |---|---|---|
@@ -33,7 +33,7 @@ Components communicate through events — a producer publishes a fact ("somethin
 
 ---
 
-### 3. What does "eventual consistency" mean and when is it acceptable?
+### 3. 🟡 What does "eventual consistency" mean and when is it acceptable?
 
 After an event is published, different parts of the system may be temporarily out of sync. They will converge to a consistent state once all events are processed.
 
@@ -47,7 +47,7 @@ After an event is published, different parts of the system may be temporarily ou
 
 ---
 
-### 4. What is the Outbox Pattern and what problem does it solve?
+### 4. 🟡 What is the Outbox Pattern and what problem does it solve?
 
 **Problem (dual-write):** You save data to the database and then publish an event to a broker. If the publish fails after the save (or vice versa), the system is inconsistent.
 
@@ -59,7 +59,7 @@ After an event is published, different parts of the system may be temporarily ou
 
 ---
 
-### 5. Explain the Saga pattern in simple terms. Choreography vs orchestration?
+### 5. 🟡 Explain the Saga pattern in simple terms. Choreography vs orchestration?
 
 A Saga coordinates a multi-step business process across services without a distributed transaction. If any step fails, previous steps are undone via compensating actions.
 
@@ -75,7 +75,7 @@ A Saga coordinates a multi-step business process across services without a distr
 
 ---
 
-### 6. How do you ensure a consumer handles the same event twice without causing problems (idempotency)?
+### 6. 🟡 How do you ensure a consumer handles the same event twice without causing problems (idempotency)?
 
 Brokers guarantee **at-least-once** delivery, not exactly-once. The same event can arrive multiple times. Strategies:
 
@@ -89,7 +89,7 @@ Brokers guarantee **at-least-once** delivery, not exactly-once. The same event c
 
 ---
 
-### 7. What is a dead-letter queue and why do you need one?
+### 7. 🟢 What is a dead-letter queue and why do you need one?
 
 When a message fails processing after a configured number of retries, it is moved to a dead-letter queue (DLQ) instead of being retried forever or silently dropped. This prevents a single "poison" message from blocking the queue.
 
@@ -101,7 +101,7 @@ When a message fails processing after a configured number of retries, it is move
 
 ---
 
-### 8. What are the main messaging patterns: pub/sub, point-to-point, and request/reply?
+### 8. 🟢 What are the main messaging patterns: pub/sub, point-to-point, and request/reply?
 
 - **Pub/Sub:** One producer, many consumers. Each consumer gets a copy. Use for events. Example: `OrderPlaced` → email service, analytics service, inventory service all react.
 - **Point-to-Point:** One producer, one consumer. Use for commands. Example: `SendEmailCommand` → email service.
@@ -113,7 +113,7 @@ When a message fails processing after a configured number of retries, it is move
 
 ---
 
-### 9. You need to build an order processing pipeline. Walk through the events and services involved.
+### 9. 🔴 You need to build an order processing pipeline. Walk through the events and services involved.
 
 Example flow:
 1. **Order Service** → publishes `OrderPlaced`
@@ -131,7 +131,7 @@ Example flow:
 
 ---
 
-### 10. How do you choose between a message broker (RabbitMQ, Azure Service Bus) and an event streaming platform (Kafka)?
+### 10. 🟡 How do you choose between a message broker (RabbitMQ, Azure Service Bus) and an event streaming platform (Kafka)?
 
 | | Message Broker | Event Streaming |
 |---|---|---|

@@ -4,7 +4,7 @@ Deep-dive questions on Thread Pool, Garbage Collector, async/await, ArrayPool an
 
 ---
 
-### 1. How does the .NET Thread Pool manage worker threads, and what is the hill-climbing algorithm?
+### 1. 🟡 How does the .NET Thread Pool manage worker threads, and what is the hill-climbing algorithm?
 
 The Thread Pool maintains a pool of pre-created threads that grow or shrink based on workload. The hill-climbing algorithm adjusts the number of threads by measuring throughput: it adds a thread, observes if throughput improved, and continues or reverses the change.
 
@@ -14,7 +14,7 @@ The Thread Pool maintains a pool of pre-created threads that grow or shrink base
 
 ---
 
-### 2. Describe the three generations of the .NET Garbage Collector and when each is collected.
+### 2. 🟢 Describe the three generations of the .NET Garbage Collector and when each is collected.
 
 - **Gen 0** – Short-lived objects (local variables, temporaries). Collected most frequently.
 - **Gen 1** – Buffer between short-lived and long-lived. Collected less often.
@@ -28,7 +28,7 @@ Collection is triggered when a generation's budget is exceeded. Gen 0 is fast (<
 
 ---
 
-### 3. What is the Large Object Heap (LOH) and why does it matter for performance?
+### 3. 🟡 What is the Large Object Heap (LOH) and why does it matter for performance?
 
 Objects ≥ 85,000 bytes are allocated on the LOH. The LOH is only collected during Gen 2 collections and is **not compacted by default**, which can cause fragmentation.
 
@@ -38,7 +38,7 @@ Objects ≥ 85,000 bytes are allocated on the LOH. The LOH is only collected dur
 
 ---
 
-### 4. Explain `async`/`await` in .NET. What happens under the hood when the compiler encounters an `await`?
+### 4. 🟡 Explain `async`/`await` in .NET. What happens under the hood when the compiler encounters an `await`?
 
 The compiler transforms the async method into a state machine (`IAsyncStateMachine`). Each `await` is a suspension point: if the awaited task is not yet complete, the method yields control back to the caller and schedules a continuation. When the task completes, the continuation resumes on the captured `SynchronizationContext` (or the thread pool if there is none).
 
@@ -48,7 +48,7 @@ The compiler transforms the async method into a state machine (`IAsyncStateMachi
 
 ---
 
-### 5. What is `ConfigureAwait(false)` and when should you use it?
+### 5. 🟡 What is `ConfigureAwait(false)` and when should you use it?
 
 `ConfigureAwait(false)` tells the awaiter not to capture and resume on the original `SynchronizationContext`. This is critical in library code to avoid deadlocks (especially in legacy ASP.NET with a single-threaded `SynchronizationContext`) and to improve performance by avoiding unnecessary context switches.
 
@@ -58,7 +58,7 @@ The compiler transforms the async method into a state machine (`IAsyncStateMachi
 
 ---
 
-### 6. How does `ValueTask<T>` differ from `Task<T>` and when should you prefer it?
+### 6. 🔴 How does `ValueTask<T>` differ from `Task<T>` and when should you prefer it?
 
 `ValueTask<T>` is a struct that can wrap either a `T` result (for synchronous completion) or a `Task<T>` (for asynchronous completion), avoiding a heap allocation when the result is available synchronously. It is ideal for hot paths where the async method completes synchronously most of the time, such as cached reads.
 
@@ -68,7 +68,7 @@ The compiler transforms the async method into a state machine (`IAsyncStateMachi
 
 ---
 
-### 7. What is `ArrayPool<T>` and how does it help reduce GC pressure?
+### 7. 🟡 What is `ArrayPool<T>` and how does it help reduce GC pressure?
 
 `ArrayPool<T>.Shared` rents and returns arrays from a pool instead of allocating new ones. This dramatically reduces Gen 0/Gen 1 allocations for transient buffers and avoids LOH allocations for large arrays.
 
@@ -78,7 +78,7 @@ The compiler transforms the async method into a state machine (`IAsyncStateMachi
 
 ---
 
-### 8. Explain thread starvation in the .NET Thread Pool. How do you diagnose and fix it?
+### 8. 🔴 Explain thread starvation in the .NET Thread Pool. How do you diagnose and fix it?
 
 Thread starvation occurs when all Thread Pool threads are blocked (e.g., synchronous waits on I/O, `Task.Wait()`, `Task.Result`) and the hill-climbing algorithm cannot inject new threads fast enough (it adds roughly 1-2 per second). Symptoms include increased latency, timeouts, and eventually deadlock.
 
@@ -88,7 +88,7 @@ Thread starvation occurs when all Thread Pool threads are blocked (e.g., synchro
 
 ---
 
-### 9. What are `Span<T>` and `Memory<T>` and how do they enable zero-allocation slicing?
+### 9. 🔴 What are `Span<T>` and `Memory<T>` and how do they enable zero-allocation slicing?
 
 `Span<T>` is a stack-only (`ref struct`) type that provides a type-safe, bounds-checked view over contiguous memory (arrays, stack-allocated buffers, native memory) without copying. `Memory<T>` is its heap-friendly counterpart that can be stored in fields and used across async boundaries.
 
@@ -98,7 +98,7 @@ Thread starvation occurs when all Thread Pool threads are blocked (e.g., synchro
 
 ---
 
-### 10. How does the .NET GC handle pinning, and what are the risks of excessive pinning?
+### 10. 🔴 How does the .NET GC handle pinning, and what are the risks of excessive pinning?
 
 Pinning (via `fixed` statement or `GCHandle.Alloc` with `GCHandleType.Pinned`) tells the GC not to move an object during compaction. This is required for P/Invoke and direct memory access but fragments the heap because the GC must work around pinned objects.
 

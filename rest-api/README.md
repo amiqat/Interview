@@ -4,7 +4,7 @@ Questions on RESTful API conventions, OpenAPI/Swagger documentation, machine-to-
 
 ---
 
-### 1. What are the key conventions of a well-designed RESTful API?
+### 1. 🟢 What are the key conventions of a well-designed RESTful API?
 
 - **Nouns for resources**, not verbs: `/orders`, not `/getOrders`.
 - **HTTP methods map to operations**: GET (read), POST (create), PUT (full update), PATCH (partial update), DELETE.
@@ -19,7 +19,7 @@ Questions on RESTful API conventions, OpenAPI/Swagger documentation, machine-to-
 
 ---
 
-### 2. How do you version a REST API and what are the trade-offs of each approach?
+### 2. 🟡 How do you version a REST API and what are the trade-offs of each approach?
 
 | Strategy | Pros | Cons |
 |---|---|---|
@@ -34,7 +34,7 @@ Questions on RESTful API conventions, OpenAPI/Swagger documentation, machine-to-
 
 ---
 
-### 3. How do you integrate Swagger/OpenAPI with an ASP.NET Core API?
+### 3. 🟢 How do you integrate Swagger/OpenAPI with an ASP.NET Core API?
 
 Add `Swashbuckle.AspNetCore` or `NSwag` and call `builder.Services.AddSwaggerGen()` + `app.UseSwagger()` + `app.UseSwaggerUI()`. Annotations like `[ProducesResponseType]`, XML comments, and `[SwaggerOperation]` enrich the spec.
 
@@ -44,7 +44,7 @@ Add `Swashbuckle.AspNetCore` or `NSwag` and call `builder.Services.AddSwaggerGen
 
 ---
 
-### 4. Explain the structure of a JWT. How does the server validate it?
+### 4. 🟡 Explain the structure of a JWT. How does the server validate it?
 
 A JWT has three Base64URL-encoded parts separated by dots: **Header** (algorithm, type), **Payload** (claims: `sub`, `iss`, `aud`, `exp`, etc.), and **Signature** (HMAC or RSA/ECDSA over header + payload).
 
@@ -60,7 +60,7 @@ Validation steps:
 
 ---
 
-### 5. How do you implement machine-to-machine (M2M) authentication using OAuth 2.0 Client Credentials flow?
+### 5. 🟡 How do you implement machine-to-machine (M2M) authentication using OAuth 2.0 Client Credentials flow?
 
 The client sends its `client_id` and `client_secret` to the token endpoint (`/connect/token`) with `grant_type=client_credentials` and the requested `scope`. The authorization server validates the credentials and returns an access token (JWT). The client includes this token in the `Authorization: Bearer <token>` header of subsequent API requests.
 
@@ -70,7 +70,7 @@ The client sends its `client_id` and `client_secret` to the token endpoint (`/co
 
 ---
 
-### 6. How do you secure a REST API endpoint in ASP.NET Core using JWT Bearer authentication?
+### 6. 🟡 How do you secure a REST API endpoint in ASP.NET Core using JWT Bearer authentication?
 
 1. Register the authentication scheme: `builder.Services.AddAuthentication().AddJwtBearer(options => { ... })`.
 2. Configure `TokenValidationParameters`: `ValidIssuer`, `ValidAudience`, `IssuerSigningKey`, `ValidateLifetime`.
@@ -83,7 +83,7 @@ The client sends its `client_id` and `client_secret` to the token endpoint (`/co
 
 ---
 
-### 7. What is the difference between authentication and authorization in the context of REST APIs?
+### 7. 🟢 What is the difference between authentication and authorization in the context of REST APIs?
 
 **Authentication** verifies *who* the caller is (identity). **Authorization** determines *what* the caller is allowed to do (permissions). In ASP.NET Core, authentication populates `HttpContext.User` (ClaimsPrincipal), and authorization evaluates policies against those claims.
 
@@ -93,7 +93,7 @@ The client sends its `client_id` and `client_secret` to the token endpoint (`/co
 
 ---
 
-### 8. How do you handle API error responses consistently?
+### 8. 🟡 How do you handle API error responses consistently?
 
 Use the **Problem Details** standard (RFC 7807 / RFC 9457): return a JSON body with `type`, `title`, `status`, `detail`, and optional `extensions`. In ASP.NET Core 7+, call `builder.Services.AddProblemDetails()` to standardise error responses across exceptions, model validation errors, and status codes.
 
@@ -103,7 +103,7 @@ Use the **Problem Details** standard (RFC 7807 / RFC 9457): return a JSON body w
 
 ---
 
-### 9. How do you implement rate limiting in ASP.NET Core?
+### 9. 🟡 How do you implement rate limiting in ASP.NET Core?
 
 ASP.NET Core 7+ provides built-in rate limiting middleware: `builder.Services.AddRateLimiter(options => { ... })` with policies like fixed window, sliding window, token bucket, and concurrency limiter. Apply per-endpoint with `[EnableRateLimiting("policy")]` or globally.
 
@@ -113,7 +113,7 @@ ASP.NET Core 7+ provides built-in rate limiting middleware: `builder.Services.Ad
 
 ---
 
-### 10. What is CORS and how do you configure it in ASP.NET Core?
+### 10. 🟢 What is CORS and how do you configure it in ASP.NET Core?
 
 Cross-Origin Resource Sharing (CORS) allows browsers to make requests to a different origin. Configure with `builder.Services.AddCors(options => { options.AddPolicy("name", policy => policy.WithOrigins(...).AllowAnyMethod().AllowAnyHeader()); })` and `app.UseCors("name")`.
 

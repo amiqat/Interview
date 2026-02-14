@@ -5,7 +5,7 @@ Use this template when adding new interview questions. Copy the block below and 
 ---
 
 ```markdown
-### [Number]. [Question text — clear, specific, and open-ended]
+### [Number]. [🟢|🟡|🔴] [Question text — clear, specific, and open-ended]
 
 [Concise model answer — 3-8 sentences covering the key points. Include code snippets if relevant.]
 
@@ -13,6 +13,18 @@ Use this template when adding new interview questions. Copy the block below and 
 
 **🚩 Red Signal:** [Specific warning signs — incorrect beliefs, dangerous practices, or fundamental gaps that indicate the candidate is not at the required level.]
 ```
+
+---
+
+## Difficulty Levels
+
+Every question must have a difficulty indicator in the heading:
+
+| Emoji | Level | When to use |
+|-------|-------|-------------|
+| 🟢 | Easy | Foundational knowledge expected of any senior developer |
+| 🟡 | Medium | Requires practical experience and deeper understanding |
+| 🔴 | Hard | Advanced topic; only strong senior/principal-level candidates will answer well |
 
 ---
 
@@ -30,7 +42,7 @@ Use this template when adding new interview questions. Copy the block below and 
 
 ## Example
 
-### 1. How does the .NET Thread Pool decide when to add or remove threads?
+### 1. 🟡 How does the .NET Thread Pool decide when to add or remove threads?
 
 The Thread Pool uses a hill-climbing algorithm: it adds a thread, measures throughput, and keeps going in the same direction if throughput improved. If throughput dropped, it reverses. This converges on the optimal thread count for the current workload.
 
