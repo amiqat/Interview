@@ -4,6 +4,36 @@ This file presents a single database schema and asks progressively harder SQL qu
 
 ## Schema
 
+```mermaid
+erDiagram
+    Departments {
+        INT DepartmentId PK
+        NVARCHAR DepartmentName
+    }
+    Students {
+        INT StudentId PK
+        NVARCHAR Name
+        INT DepartmentId FK
+    }
+    Courses {
+        INT CourseId PK
+        NVARCHAR CourseName
+        INT DepartmentId FK
+    }
+    Enrollments {
+        INT EnrollmentId PK
+        INT StudentId FK
+        INT CourseId FK
+        DECIMAL Grade
+        DATE EnrolledDate
+    }
+
+    Departments ||--o{ Students : "has"
+    Departments ||--o{ Courses : "offers"
+    Students ||--o{ Enrollments : "enrolls in"
+    Courses ||--o{ Enrollments : "has"
+```
+
 ```sql
 CREATE TABLE Departments (
     DepartmentId INT PRIMARY KEY,
@@ -153,7 +183,7 @@ ORDER BY AvgGrade DESC;
 
 `HAVING` filters after aggregation — it is the `WHERE` clause for grouped results. A candidate who puts the filter in `WHERE` (`WHERE AVG(e.Grade) > 80`) will get a syntax error because `WHERE` is evaluated before `GROUP BY`.
 
-**Hint:** A strong candidate immediately distinguishes `WHERE` (filters rows before grouping) from `HAVING` (filters groups after aggregation) and joins through `Courses` rather than `Students`. Follow up: "What if you want departments where *every* course's average is above 80, not just the department-wide average?"
+**Hint:** A strong candidate immediately distinguishes `WHERE` (filters rows before grouping) from `HAVING` (filters groups after aggregation) and joins through `Courses` rather than `Students`. Follow up: "What if you want departments where _every_ course's average is above 80, not just the department-wide average?"
 
 **🚩 Red Signal:** Puts the aggregate condition in the `WHERE` clause, or confuses the join path — joining through `Students.DepartmentId` instead of `Courses.DepartmentId` would answer a different question (departments by student performance, not by course performance).
 
@@ -223,7 +253,7 @@ The `AND EXISTS` guard in the first approach handles the edge case where a depar
 
 **Hint:** Ask the candidate to handle the edge case of a department with no courses. The double-count technique is the standard approach — match the student's enrolled course count against the department's total course count. Follow up: "How does performance change if a department has 500 courses?"
 
-**🚩 Red Signal:** Cannot articulate the relational division concept, or writes a query that only checks if a student is enrolled in *any* course in their department rather than *all* courses.
+**🚩 Red Signal:** Cannot articulate the relational division concept, or writes a query that only checks if a student is enrolled in _any_ course in their department rather than _all_ courses.
 
 ---
 
