@@ -134,7 +134,61 @@ The application is repeatedly allocating large byte arrays (≥ 85,000 bytes) on
 
 ---
 
-### 10. 🔴 Your production API starts returning HTTP 503s under moderate load. Thread Pool queue length is spiking above 500, thread count is climbing slowly (1–2/second), and most threads are blocked in `Task.Wait()` or `Task.Result` inside a legacy data access layer. Walk through diagnosis and fix.
+### 10. � Your service processes large payloads (file uploads, report generation, batch CSV imports) and you notice Gen 2 GC collections increasing, memory climbing, and occasional `OutOfMemoryException` in production. How would you redesign the data handling to fix this?
+
+The root cause is repeated allocation of large `byte[]` or `string` buffers that land on the LOH (≥ 85 KB) or create heavy GC pressure even below that threshold. Every `new byte[size]` or `Encoding.GetString(hugeSpan)` allocates on the managed heap, and at high throughput the GC can't keep up.
+
+**Three complementary techniques solve this:**
+
+**1. `ArrayPool<T>` — reuse buffers instead of allocating new ones**
+Rent a buffer from the shared pool, use it, return it. The same memory is recycled across requests, avoiding both LOH fragmentation and Gen 0 pressure.
+
+```csharp
+byte[] buffer = ArrayPool<byte>.Shared.Rent(1_048_576); // 1 MB, goes to LOH once
+try
+{
+    int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, 1_048_576));
+    ProcessChunk(buffer.AsSpan(0, bytesRead));
+}
+finally
+{
+    ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+}
+```
+
+**2. `Span<T>` / `ReadOnlySpan<char>` — slice without allocating**
+Instead of `Substring` or `Split` on large strings, use span slicing to create views over existing memory with zero allocation.
+
+```csharp
+ReadOnlySpan<char> line = largeLine.AsSpan();
+ReadOnlySpan<char> firstField = line[..line.IndexOf(',')]; // no new string
+int id = int.Parse(firstField);                            // parse directly from span
+```
+
+**3. `System.IO.Pipelines` — streaming with pooled buffers**
+For file/network I/O, use `PipeReader` to process data in small pooled chunks instead of reading the entire payload into a single `byte[]`.
+
+```csharp
+PipeReader reader = PipeReader.Create(stream);
+while (true)
+{
+    ReadResult result = await reader.ReadAsync();
+    ReadOnlySequence<byte> buffer = result.Buffer;
+    // Process buffer in pooled segments — no large single allocation
+    reader.AdvanceTo(buffer.End);
+    if (result.IsCompleted) break;
+}
+```
+
+The combination eliminates LOH allocations (ArrayPool reuses them), removes intermediate string/array allocations (Span slices in-place), and bounds peak memory (Pipelines streams in chunks). This is the standard pattern for high-throughput .NET services handling large data.
+
+**Hint:** This question is intentionally framed as a production problem — strong candidates will connect "large data + memory growth" to LOH, then propose ArrayPool + Span without needing to be told the specific APIs. Follow-up: "Can you use `Span<T>` inside an `async` method?" (No — it's a `ref struct`; use `Memory<T>` or extract span work into a synchronous helper.) "What if you also need to pin buffers for native interop?" (Use `GC.AllocateArray<byte>(size, pinned: true)` for the POH.)
+
+**🚩 Red Signal:** Suggests only `GC.Collect()` or increasing server RAM, doesn't mention buffer reuse or span-based processing, or is unaware that large allocations land on the LOH.
+
+---
+
+### 11. �🔴 Your production API starts returning HTTP 503s under moderate load. Thread Pool queue length is spiking above 500, thread count is climbing slowly (1–2/second), and most threads are blocked in `Task.Wait()` or `Task.Result` inside a legacy data access layer. Walk through diagnosis and fix.
 
 This is classic **Thread Pool starvation**. The legacy layer makes synchronous blocking calls (`.Wait()`, `.Result`) on Thread Pool threads, consuming them while waiting for I/O. When all available threads are blocked, incoming requests queue up. The Thread Pool's hill-climbing algorithm injects threads at ~1–2/second — far too slow to keep pace with incoming load. The queue grows, latency explodes, and Kestrel's request timeout fires 503s.
 
@@ -148,7 +202,7 @@ This is classic **Thread Pool starvation**. The legacy layer makes synchronous b
 
 ---
 
-### 11. 🔴 A CSV parser in your pipeline uses `string.Split(',')` on each line, generating millions of small string allocations per file. How would you optimize this with `Span<T>` and related types?
+### 12. 🔴 A CSV parser in your pipeline uses `string.Split(',')` on each line, generating millions of small string allocations per file. How would you optimize this with `Span<T>` and related types?
 
 `string.Split` allocates a new `string[]` plus individual `string` objects for every segment on every line — at millions of lines, this dominates GC pressure. The fix is to use `ReadOnlySpan<char>` to slice the original line without allocating new strings.
 
@@ -175,7 +229,7 @@ Key techniques: `Span<T>` slicing creates views over existing memory (no copy, n
 
 ---
 
-### 12. 🔴 A service using P/Invoke to call native libraries has growing heap fragmentation. Memory dumps show many pinned `byte[]` objects scattered across the heap. What's happening and how does the .NET 5+ Pinned Object Heap (POH) help?
+### 13. 🔴 A service using P/Invoke to call native libraries has growing heap fragmentation. Memory dumps show many pinned `byte[]` objects scattered across the heap. What's happening and how does the .NET 5+ Pinned Object Heap (POH) help?
 
 When you pin a managed object (via `GCHandle.Alloc(obj, GCHandleType.Pinned)` or `fixed` blocks) for native interop, the GC cannot move that object during compaction. Pinned objects scattered throughout Gen 0/1/2 create "holes" — the GC compacts around them, leaving fragmented free space. With many pinned buffers (common in socket I/O, P/Invoke-heavy code), this fragments the entire heap, increasing GC pause times and memory usage.
 
@@ -190,7 +244,7 @@ GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 byte[] buffer = GC.AllocateArray<byte>(4096, pinned: true);
 ```
 
-The trade-off: POH objects are never compacted (similar to the LOH), so you should still pool and reuse them. The POH solves fragmentation of the *regular* heap, not fragmentation within the POH itself. Combine with `ArrayPool<byte>` or a custom pool for reuse.
+The trade-off: POH objects are never compacted (similar to the LOH), so you should still pool and reuse them. The POH solves fragmentation of the _regular_ heap, not fragmentation within the POH itself. Combine with `ArrayPool<byte>` or a custom pool for reuse.
 
 **Hint:** A strong answer distinguishes between the LOH (large objects), the POH (pinned objects), and the regular generational heap. Follow-up: "When would you still use `GCHandle` instead of the POH?" (Short-lived pins during a single P/Invoke call — `fixed` blocks are fine; POH is for long-lived pinned buffers.) "Does the POH exist on all GC modes?" (Yes — both Workstation and Server GC.)
 
