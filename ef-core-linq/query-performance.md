@@ -2,7 +2,27 @@
 
 ---
 
-### 1. 🟡 A LINQ query that worked perfectly in development suddenly throws an `InvalidOperationException` in production after upgrading from EF Core 2.x to 5+. The developer didn't change any application code. What changed in the framework and how do you fix the query?
+### 1. 🟢 What is the N+1 query problem in one sentence?
+
+Loading a list of parents and then accessing a navigation property on each one triggers N separate queries for the children — one per parent — instead of a single query that fetches everything.
+
+**Hint:** The candidate should immediately connect this to lazy loading and mention `.Include()` as the fix.
+
+**🚩 Red Signal:** Cannot define N+1 or confuses it with a different performance issue.
+
+---
+
+### 2. 🟢 What does `AsNoTracking()` do and when should you use it?
+
+It disables EF Core's change tracker for the query results, eliminating the overhead of creating snapshots for each entity. Use it for read-only queries where you never intend to call `SaveChanges()` on the returned entities.
+
+**Hint:** Look for awareness that the change tracker has a real CPU and memory cost, especially for large result sets.
+
+**🚩 Red Signal:** Cannot explain what the change tracker does or when skipping it is appropriate.
+
+---
+
+### 3. 🟡 A LINQ query that worked perfectly in development suddenly throws an `InvalidOperationException` in production after upgrading from EF Core 2.x to 5+. The developer didn't change any application code. What changed in the framework and how do you fix the query?
 
 In EF Core 2.x, expressions that couldn't be translated to SQL were silently evaluated on the client — the framework would pull all rows into memory and apply the filter in C#. This often caused severe performance problems that went unnoticed. Starting with EF Core 3.0+, untranslatable expressions throw an `InvalidOperationException` by default to make these issues visible. To fix the query, rewrite the untranslatable portion so EF Core can convert it to SQL, or explicitly move the client-side logic after a `.ToList()` / `.AsEnumerable()` call so the boundary is intentional. Use `.ToQueryString()` during development to verify that the entire query translates. If the expression involves a C# method with no SQL equivalent (e.g., a custom string helper), replace it with an EF-supported function or compute the value before the query.
 
@@ -12,7 +32,7 @@ In EF Core 2.x, expressions that couldn't be translated to SQL were silently eva
 
 ---
 
-### 2. 🟢 Your API endpoint returns 1,000 products in a read-only list, but response times are slower than expected. Profiling shows most of the time is spent inside the EF Core change tracker, not in the database. What's happening and how do you optimize this?
+### 4. 🟢 Your API endpoint returns 1,000 products in a read-only list, but response times are slower than expected. Profiling shows most of the time is spent inside the EF Core change tracker, not in the database. What's happening and how do you optimize this?
 
 By default, EF Core tracks every entity returned by a query in its change tracker — it creates snapshots of each entity's property values so it can detect modifications at `SaveChanges()` time. For 1,000 products in a read-only endpoint, this snapshot creation and identity-resolution overhead is wasted work. Adding `.AsNoTracking()` to the query disables tracking, which eliminates the snapshot cost and reduces memory allocations significantly. For cases where you need identity resolution but not full change tracking, EF Core offers `.AsNoTrackingWithIdentityResolution()`. You can also set `QueryTrackingBehavior.NoTracking` at the `DbContext` level for contexts that are predominantly read-only.
 
@@ -30,7 +50,7 @@ var products = await context.Products.AsNoTracking().ToListAsync();
 
 ---
 
-### 3. 🟢 You're building an order history page that displays 100 orders with their line items. The page loads, but SQL Profiler shows 101 separate queries — one for orders and one for each order's items. What's happening and how do you fix it?
+### 5. 🟢 You're building an order history page that displays 100 orders with their line items. The page loads, but SQL Profiler shows 101 separate queries — one for orders and one for each order's items. What's happening and how do you fix it?
 
 This is the classic N+1 query problem. The first query loads 100 orders, and then as each order's `Items` navigation property is accessed (via lazy loading), EF Core issues a separate SQL query for each order — producing 100 additional queries. The fix depends on the scenario:
 - **Eager loading** with `.Include(o => o.Items)` joins items into the original query.
@@ -55,7 +75,7 @@ var orders = await context.Orders
 
 ---
 
-### 4. 🔴 Your hot-path endpoint runs the same parameterised EF Core query roughly 10,000 times per second. A CPU profile shows 15% of time is spent compiling the LINQ expression tree — not executing the query against the database. How do you eliminate this overhead?
+### 6. 🔴 Your hot-path endpoint runs the same parameterised EF Core query roughly 10,000 times per second. A CPU profile shows 15% of time is spent compiling the LINQ expression tree — not executing the query against the database. How do you eliminate this overhead?
 
 Use `EF.CompileQuery` or `EF.CompileAsyncQuery` to pre-compile the LINQ expression tree into a reusable delegate. This removes the cost of parsing and translating the expression tree on every invocation — the compiled delegate goes straight to SQL generation with cached metadata. EF Core 6+ already has an internal query cache that helps for most queries, but compiled queries bypass the cache lookup entirely, which matters when profiling proves LINQ compilation is the bottleneck. The compiled query is typically stored as a `static` field and reused across requests.
 
@@ -77,7 +97,7 @@ The key distinction is between *query compilation time* (translating LINQ → SQ
 
 ---
 
-### 5. 🟢 A developer writes this code to search products by category and is confused why it fetches all 2 million rows from the database before filtering. What's wrong?
+### 7. 🟢 A developer writes this code to search products by category and is confused why it fetches all 2 million rows from the database before filtering. What's wrong?
 
 ```csharp
 IEnumerable<Product> products = context.Products;

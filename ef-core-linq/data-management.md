@@ -2,7 +2,17 @@
 
 ---
 
-### 1. 🟡 Your team needs to import 50,000 products from a supplier CSV file nightly. The current implementation adds each product to the `DbContext` and calls `SaveChanges()` — it takes over 10 minutes. How do you bring this down to seconds?
+### 1. 🟢 What is the difference between `IQueryable<T>` and `IEnumerable<T>` when used with EF Core?
+
+`IQueryable<T>` builds an expression tree that EF Core translates into SQL — filtering and projection happen on the database server. `IEnumerable<T>` evaluates in memory, meaning all rows are loaded first and then filtered in C#.
+
+**Hint:** The candidate should mention that using `IEnumerable<T>` accidentally can pull entire tables into memory.
+
+**🚩 Red Signal:** Cannot explain which interface keeps the query server-side or why it matters for performance.
+
+---
+
+### 2. 🟡 Your team needs to import 50,000 products from a supplier CSV file nightly. The current implementation adds each product to the `DbContext` and calls `SaveChanges()` — it takes over 10 minutes. How do you bring this down to seconds?
 
 The default `SaveChanges()` sends one `INSERT` statement per entity, and the change tracker runs `DetectChanges()` on every `Add()` call — this is extremely slow at scale. Several strategies can reduce the time dramatically:
 - **`SqlBulkCopy`** via the underlying `SqlConnection` is the fastest option — it streams rows directly using the TDS protocol's bulk insert path and can insert 50K rows in seconds.
@@ -34,7 +44,7 @@ for (int i = 0; i < products.Count; i += 1000)
 
 ---
 
-### 2. 🟡 You deploy your EF Core application to production behind a load balancer with 3 API instances. Each instance calls `context.Database.MigrateAsync()` at startup. Occasionally deployments fail with race conditions when multiple instances start simultaneously. What is the safe production strategy for applying migrations?
+### 3. 🟡 You deploy your EF Core application to production behind a load balancer with 3 API instances. Each instance calls `context.Database.MigrateAsync()` at startup. Occasionally deployments fail with race conditions when multiple instances start simultaneously. What is the safe production strategy for applying migrations?
 
 `MigrateAsync()` at startup is convenient for single-instance development but causes problems in scaled-out deployments — multiple instances may try to apply the same migration concurrently, leading to deadlocks or duplicate-key errors in the `__EFMigrationsHistory` table. The safe production strategy is to **separate migration execution from application startup**:
 - **Generate idempotent SQL scripts** with `dotnet ef migrations script --idempotent` and apply them through your CI/CD pipeline before deploying the new application code. Idempotent scripts check the `__EFMigrationsHistory` table before applying each migration, making them safe to re-run.
@@ -47,7 +57,7 @@ for (int i = 0; i < products.Count; i += 1000)
 
 ---
 
-### 3. 🟡 Your EF Core query for a complex financial report with multiple joins, window functions, and aggregations is too slow — the LINQ translation produces suboptimal SQL. You need raw SQL performance but don't want to abandon the ORM entirely. How do you combine both approaches?
+### 4. 🟡 Your EF Core query for a complex financial report with multiple joins, window functions, and aggregations is too slow — the LINQ translation produces suboptimal SQL. You need raw SQL performance but don't want to abandon the ORM entirely. How do you combine both approaches?
 
 EF Core provides several ways to use raw SQL while keeping ORM benefits like mapping, tracking, and composability:
 - **`FromSqlRaw` / `FromSqlInterpolated`** execute raw SQL and map results to entity types. Crucially, you can compose further LINQ on top (`.Where()`, `.OrderBy()`, `.Include()`), so you get raw SQL for the heavy lifting and LINQ for the last-mile filtering.
@@ -72,7 +82,7 @@ Always use parameterised queries — `FromSqlInterpolated` uses `FormattableStri
 
 ---
 
-### 4. 🟡 Two customer-support agents open the same customer record simultaneously. Agent A changes the email, Agent B changes the phone number. Agent B saves last and silently overwrites Agent A's email change. How do you detect and handle this with EF Core?
+### 5. 🟡 Two customer-support agents open the same customer record simultaneously. Agent A changes the email, Agent B changes the phone number. Agent B saves last and silently overwrites Agent A's email change. How do you detect and handle this with EF Core?
 
 This is a lost-update problem that EF Core solves with **optimistic concurrency**. You add a concurrency token — typically a `[Timestamp]` property that maps to a SQL Server `rowversion` column (or a `[ConcurrencyCheck]` on a specific column). EF Core includes the token's original value in the `WHERE` clause of the `UPDATE` statement. If another user modified the row since it was read, the `WHERE` matches zero rows and EF Core throws `DbUpdateConcurrencyException`. You then handle the conflict by reloading the entity, merging changes, and retrying.
 
@@ -112,7 +122,7 @@ The resolution strategy depends on business requirements: you might auto-merge n
 
 ---
 
-### 5. 🟡 Your multi-tenant SaaS application stores all tenants in a single database with a `TenantId` column on every table. Developers keep forgetting to add `.Where(x => x.TenantId == currentTenantId)` to their queries, and you've had two data-leak incidents where Tenant A saw Tenant B's data. How do you enforce tenant isolation automatically so this can never happen again?
+### 6. 🟡 Your multi-tenant SaaS application stores all tenants in a single database with a `TenantId` column on every table. Developers keep forgetting to add `.Where(x => x.TenantId == currentTenantId)` to their queries, and you've had two data-leak incidents where Tenant A saw Tenant B's data. How do you enforce tenant isolation automatically so this can never happen again?
 
 Use **Global Query Filters** in EF Core. In `OnModelCreating`, you configure a LINQ predicate on each entity that EF Core automatically appends to every query for that entity type — including queries through navigation properties (`.Include()`). This eliminates the possibility of developers forgetting the filter.
 

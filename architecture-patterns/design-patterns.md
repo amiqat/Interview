@@ -4,7 +4,17 @@ Practical design patterns for .NET applications — how and when to apply them.
 
 ---
 
-### 1. 🟡 Your controllers are bloated — 50+ lines of validation, DB calls, and mapping per action. How would you decouple the request handling from the controller?
+### 1. 🟢 What is the Unit of Work pattern and how does EF Core implement it?
+
+The Unit of Work pattern tracks all changes made during a business operation and commits them atomically in a single transaction. EF Core's `DbContext` is the Unit of Work — it tracks entity changes and `SaveChanges()` wraps everything in one database transaction.
+
+**Hint:** The candidate should explain why calling `SaveChanges()` once at the end (not after each operation) ensures atomicity.
+
+**🚩 Red Signal:** Cannot explain what Unit of Work means or how `DbContext` implements it.
+
+---
+
+### 2. 🟡 Your controllers are bloated — 50+ lines of validation, DB calls, and mapping per action. How would you decouple the request handling from the controller?
 
 The Mediator pattern decouples senders from receivers by routing requests through a central mediator. MediatR implements this in .NET:
 
@@ -20,7 +30,7 @@ The controller becomes a thin routing layer that dispatches requests to handlers
 
 ---
 
-### 2. 🟡 You're reading `Configuration["Payment:ApiKey"]` as magic strings in 15 places across the codebase. How do you clean this up? What are the differences between `IOptions<T>`, `IOptionsSnapshot<T>`, and `IOptionsMonitor<T>`?
+### 3. 🟡 You're reading `Configuration["Payment:ApiKey"]` as magic strings in 15 places across the codebase. How do you clean this up? What are the differences between `IOptions<T>`, `IOptionsSnapshot<T>`, and `IOptionsMonitor<T>`?
 
 ```csharp
 // appsettings.json
@@ -47,7 +57,7 @@ public class PaymentService(IOptions<PaymentOptions> options) { ... }
 
 ---
 
-### 3. 🟢 A developer calls `SaveChanges()` after each entity update within a single request — resulting in 5 separate database transactions. Is this a problem? How should it be handled?
+### 4. 🟢 A developer calls `SaveChanges()` after each entity update within a single request — resulting in 5 separate database transactions. Is this a problem? How should it be handled?
 
 The Unit of Work pattern tracks all changes made during a business transaction and commits them atomically. `DbContext` is the Unit of Work in EF Core: it tracks entity changes and `SaveChanges()` writes them all in a single database transaction.
 
@@ -59,7 +69,7 @@ Calling `SaveChanges()` five times means five separate transactions — if the t
 
 ---
 
-### 4. 🟡 Your payment API is failing intermittently — timeouts and 500 errors. Your retry logic keeps hammering it even when it's clearly down. How do you stop calling a failing service and recover gracefully?
+### 5. 🟡 Your payment API is failing intermittently — timeouts and 500 errors. Your retry logic keeps hammering it even when it's clearly down. How do you stop calling a failing service and recover gracefully?
 
 Using Polly (standalone) or `Microsoft.Extensions.Http.Resilience` (.NET 8):
 
@@ -87,7 +97,7 @@ builder.Services.AddHttpClient<IPaymentClient, PaymentClient>()
 
 ---
 
-### 5. 🟡 You need to add caching and logging to `SqlOrderRepository` without modifying it. How do you layer on this behaviour?
+### 6. 🟡 You need to add caching and logging to `SqlOrderRepository` without modifying it. How do you layer on this behaviour?
 
 The Decorator pattern wraps an existing implementation to add behaviour without modifying it. In .NET DI, use `Scrutor` or manual registration:
 
@@ -108,7 +118,7 @@ This is a practical application of OCP — add behaviour by wrapping, not modify
 
 ---
 
-### 6. 🔴 Your application needs a plugin system — new features must be added without redeploying the main application. How do you design this?
+### 7. 🔴 Your application needs a plugin system — new features must be added without redeploying the main application. How do you design this?
 
 **Approaches:**
 - **Assembly loading:** `AssemblyLoadContext` to load plugins at runtime from a folder. Define a shared `IPlugin` interface in a contracts package.

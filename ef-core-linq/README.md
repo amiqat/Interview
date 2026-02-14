@@ -6,5 +6,5 @@ This category covers Entity Framework Core and LINQ — the primary data-access 
 
 | File | Focus Area | Questions |
 |------|-----------|-----------|
-| [Query Performance](query-performance.md) | Client evaluation, change tracking, N+1 queries, compiled queries, IQueryable vs IEnumerable | 5 |
-| [Data Management](data-management.md) | Bulk inserts, migrations, raw SQL, concurrency conflicts, global query filters | 5 |
+| [Query Performance](query-performance.md) | Client evaluation, change tracking, N+1 queries, compiled queries, IQueryable vs IEnumerable | 7 |
+| [Data Management](data-management.md) | Bulk inserts, migrations, raw SQL, concurrency conflicts, global query filters | 6 |

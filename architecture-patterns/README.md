@@ -6,5 +6,5 @@ Scenario-based questions on software architecture decisions and practical design
 
 | File | Focus | Questions | Difficulty |
 |---|---|---|---|
-| [Architecture](architecture.md) | Clean Architecture, vertical slices, CQRS, Repository pattern | 4 | 🟡🟡 🔴🔴 |
-| [Design Patterns](design-patterns.md) | Mediator, Options, Unit of Work, Circuit Breaker, Decorator, plugin systems | 6 | 🟢 🟡🟡🟡🟡 🔴 |
+| [Architecture](architecture.md) | Clean Architecture, vertical slices, CQRS, Repository pattern | 5 | 🟢 🟡🟡 🔴🔴 |
+| [Design Patterns](design-patterns.md) | Mediator, Options, Unit of Work, Circuit Breaker, Decorator, plugin systems | 7 | 🟢🟢 🟡🟡🟡🟡 🔴 |

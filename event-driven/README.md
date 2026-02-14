@@ -6,5 +6,5 @@ Scenario-based questions on event-driven systems — from core concepts and trad
 
 | File | Focus | Questions | Difficulty |
 |---|---|---|---|
-| [Fundamentals](fundamentals.md) | EDA concepts, events vs commands, consistency, DLQ, messaging patterns | 5 | 🟢🟢🟢🟢 🟡 |
-| [Patterns](patterns.md) | Outbox, Saga, idempotency, end-to-end design, broker vs streaming | 5 | 🟡🟡🟡🟡 🔴 |
+| [Fundamentals](fundamentals.md) | EDA concepts, events vs commands, consistency, DLQ, messaging patterns | 7 | 🟢🟢🟢🟢🟢🟢 🟡 |
+| [Patterns](patterns.md) | Outbox, Saga, idempotency, end-to-end design, broker vs streaming | 6 | 🟢 🟡🟡🟡🟡 🔴 |

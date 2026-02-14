@@ -4,7 +4,27 @@ Core concepts of event-driven systems — what they are, when to use them, and t
 
 ---
 
-### 1. 🟢 Your e-commerce platform processes orders synchronously — validate, charge payment, reserve inventory, send email — all in one HTTP request taking 3 seconds. How would you redesign this with an event-driven approach, and what trade-offs would you accept?
+### 1. 🟢 What is the difference between an event and a command in messaging?
+
+An event is past tense ("OrderPlaced") and describes something that already happened — it can have many subscribers. A command is imperative ("PlaceOrder") and is directed at exactly one handler that is expected to carry it out.
+
+**Hint:** The candidate should connect naming conventions (past tense vs imperative) to routing patterns (pub/sub vs point-to-point).
+
+**🚩 Red Signal:** Uses "event" and "command" interchangeably or cannot explain when to use each.
+
+---
+
+### 2. 🟢 What is a dead-letter queue?
+
+A dead-letter queue (DLQ) is where messages are sent after exhausting all retry attempts. It prevents poison messages — those that repeatedly fail processing — from blocking the main queue and stopping other messages from being consumed.
+
+**Hint:** Look for awareness that DLQs need monitoring and alerting, and that messages in them can be inspected and replayed after a fix.
+
+**🚩 Red Signal:** Has no concept of what happens to messages that fail repeatedly, or suggests letting them block the queue.
+
+---
+
+### 3. 🟢 Your e-commerce platform processes orders synchronously — validate, charge payment, reserve inventory, send email — all in one HTTP request taking 3 seconds. How would you redesign this with an event-driven approach, and what trade-offs would you accept?
 
 Instead of doing everything synchronously, the API validates the order and publishes an `OrderPlaced` event, returning immediately (or with `202 Accepted`). Independent consumers handle payment, inventory, and email in parallel or in sequence. The producer does not wait for or even know about the consumers.
 
@@ -18,7 +38,7 @@ Instead of doing everything synchronously, the API validates the order and publi
 
 ---
 
-### 2. 🟢 A developer names a message `UpdateInventory` and publishes it to a topic with multiple subscribers. Another developer names their message `InventoryUpdated` and sends it to a single queue. Explain why the naming and routing choices matter.
+### 4. 🟢 A developer names a message `UpdateInventory` and publishes it to a topic with multiple subscribers. Another developer names their message `InventoryUpdated` and sends it to a single queue. Explain why the naming and routing choices matter.
 
 | | Event | Command |
 |---|---|---|
@@ -35,7 +55,7 @@ The first developer has it backwards: `UpdateInventory` is a command (imperative
 
 ---
 
-### 3. 🟡 After publishing an `OrderPlaced` event, the search index and email service are temporarily out of sync — users see stale search results for a few seconds. Is this acceptable? When would it not be?
+### 5. 🟡 After publishing an `OrderPlaced` event, the search index and email service are temporarily out of sync — users see stale search results for a few seconds. Is this acceptable? When would it not be?
 
 After an event is published, different parts of the system may be temporarily out of sync. They will converge to a consistent state once all events are processed. This is eventual consistency.
 
@@ -49,7 +69,7 @@ After an event is published, different parts of the system may be temporarily ou
 
 ---
 
-### 4. 🟢 A consumer keeps crashing on a specific malformed message. The message gets redelivered endlessly, blocking all other messages in the queue. How do you prevent this?
+### 6. 🟢 A consumer keeps crashing on a specific malformed message. The message gets redelivered endlessly, blocking all other messages in the queue. How do you prevent this?
 
 When a message fails processing after a configured number of retries, it should be moved to a dead-letter queue (DLQ) instead of being retried forever or silently dropped. This prevents a single "poison" message from blocking the entire queue.
 
@@ -63,7 +83,7 @@ The DLQ provides a holding area where failed messages can be inspected, the root
 
 ---
 
-### 5. 🟢 You have three situations: (1) an order is placed and multiple services need to know, (2) you need to send one specific email, (3) you need to call a service and wait for a response. Which messaging pattern fits each and why?
+### 7. 🟢 You have three situations: (1) an order is placed and multiple services need to know, (2) you need to send one specific email, (3) you need to call a service and wait for a response. Which messaging pattern fits each and why?
 
 - **Pub/Sub (situation 1):** One producer, many consumers. Each consumer gets a copy. Use for events. Example: `OrderPlaced` → email service, analytics service, inventory service all react independently.
 - **Point-to-Point (situation 2):** One producer, one consumer. Use for commands. Example: `SendEmailCommand` → email service is the only handler.

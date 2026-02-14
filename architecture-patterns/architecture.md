@@ -4,7 +4,17 @@ Questions on software architecture patterns and architectural decision-making fo
 
 ---
 
-### 1. 🟡 A new project is set up with `Controllers/`, `Services/`, `Repositories/` folders. A developer adds EF Core references directly in the service layer. What architectural problems might this cause?
+### 1. 🟢 What is the Dependency Rule in Clean Architecture?
+
+Outer layers depend on inner layers, never the reverse. The domain layer sits at the centre and has zero external dependencies — it defines interfaces that outer layers (infrastructure, presentation) implement.
+
+**Hint:** The candidate should be able to name the layers (Domain → Application → Infrastructure → Presentation) and explain the direction of dependencies.
+
+**🚩 Red Signal:** Cannot explain which layer depends on which, or thinks the domain layer should reference EF Core or HTTP concerns.
+
+---
+
+### 2. 🟡 A new project is set up with `Controllers/`, `Services/`, `Repositories/` folders. A developer adds EF Core references directly in the service layer. What architectural problems might this cause?
 
 This is a classic **layered architecture** that's missing the key rule of **Clean Architecture**: the **Dependency Rule** — outer layers depend on inner layers, never the reverse.
 
@@ -23,7 +33,7 @@ Adding EF Core references in the service layer means the business logic is coupl
 
 ---
 
-### 2. 🔴 Your team's layered architecture means every feature change touches 5 files across 3 layers. Merge conflicts are constant and features take twice as long as expected. What alternative architecture would you propose?
+### 3. 🔴 Your team's layered architecture means every feature change touches 5 files across 3 layers. Merge conflicts are constant and features take twice as long as expected. What alternative architecture would you propose?
 
 **Layered (horizontal):** Organise by technical concern — Controllers, Services, Repositories. Changes to a feature touch multiple layers and files, leading to merge conflicts in shared folders.
 
@@ -37,7 +47,7 @@ Adding EF Core references in the service layer means the business logic is coupl
 
 ---
 
-### 3. 🔴 Your read and write patterns are very different — complex validation on writes but simple flat reads. A single model serves both, and it's getting increasingly complex. How do you separate concerns?
+### 4. 🔴 Your read and write patterns are very different — complex validation on writes but simple flat reads. A single model serves both, and it's getting increasingly complex. How do you separate concerns?
 
 CQRS (Command Query Responsibility Segregation) separates the **write model** (commands — optimised for consistency and validation) from the **read model** (queries — optimised for fast retrieval, possibly denormalised).
 
@@ -51,7 +61,7 @@ CQRS (Command Query Responsibility Segregation) separates the **write model** (c
 
 ---
 
-### 4. 🟡 A team member wraps every `DbSet<T>` in a generic `Repository<T>` that returns `IQueryable<T>`. They say it's "for testability." Do you agree? What are the problems?
+### 5. 🟡 A team member wraps every `DbSet<T>` in a generic `Repository<T>` that returns `IQueryable<T>`. They say it's "for testability." Do you agree? What are the problems?
 
 The Repository pattern abstracts data access behind an interface (`IOrderRepository`), hiding the persistence mechanism from the business logic.
 
