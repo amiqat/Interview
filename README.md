@@ -70,11 +70,20 @@ See the [Evaluation Guide](EVALUATION.md) for the full interview process, scorin
 ├── rest-api/
 │   └── README.md              # REST conventions, Swagger, JWT, M2M auth
 ├── solid-principles/
-│   └── README.md              # SRP, OCP, DIP, LSP, ISP
+│   ├── README.md              # Intro + index
+│   ├── core-principles.md     # SRP, OCP, DIP, LSP, ISP
+│   └── applied-solid.md       # Trade-offs, patterns, when to break the rules
 ├── event-driven/
-│   └── README.md              # Events, Sagas, Outbox, idempotency
+│   ├── README.md              # Intro + index
+│   ├── fundamentals.md        # EDA concepts, events vs commands, DLQ
+│   └── patterns.md            # Outbox, Saga, idempotency, broker vs streaming
 ├── architecture-patterns/
-│   └── README.md              # Clean Architecture, CQRS, design patterns
+│   ├── README.md              # Intro + index
+│   ├── architecture.md        # Clean Architecture, vertical slices, CQRS
+│   └── design-patterns.md     # Mediator, Options, Circuit Breaker, Decorator
 └── real-world-scenarios/
-    └── README.md              # Cross-cutting real-world scenario questions
+    ├── README.md              # Intro + index
+    ├── debugging-performance.md # Production diagnosis, EF Core performance
+    ├── system-design.md       # Multi-tenant, real-time, high-throughput
+    └── engineering-practices.md # Migration, resilience, CI/CD, testing
 ```
