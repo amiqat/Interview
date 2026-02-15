@@ -29,12 +29,12 @@ Interviewer: _______________
 | Category                  | Score (1-4) | Notes |
 |---------------------------|-------------|-------|
 | .NET Internals            |             |       |
+| .NET Modern (8/10)        |             |       |
 | EF Core & LINQ            |             |       |
 | SQL Server                |             |       |
 | REST API & Auth           |             |       |
 | SOLID Principles          |             |       |
 | Event-Driven              |             |       |
-| .NET Modern (8/10)        |             |       |
 | Architecture & Patterns   |             |       |
 | Real-World Scenarios      |             |       |
 | Communication & Clarity   |             |       |
